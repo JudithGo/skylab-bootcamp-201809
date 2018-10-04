@@ -116,10 +116,19 @@ body
                     margin-left: -40px
                     display: flex
                     justify-content: center
-                    hr
-                        height: 45px
-                        width: 0.5px   
-                        color: #e6e5e5    
+                    @media (min-width: 1024px)
+                        a 
+                            border-right: 0.5px solid #cacecd     
+                            height: 45px
+                            text-align: center
+                            display: flex
+                            justify-content: center
+                            align-items: center
+                            margin:0
+                        .a__li 
+                            width: 75px
+                        .a-li
+                            width: 50px 
                     @media (max-width: 1023px)
                         position: absolute
                         width: 70px
@@ -152,26 +161,31 @@ body
                  
             //////////////
                 
-            &__search
-                display: flex
-                justify-content: center
-                align-items: center
-                border: 1px solid #ced2d1
-                @media (max-width: 1023px)
-                    visibility: hidden
-                @media (max-width: 479px)
-                    width: 5px
-                &__search__input
-                    height: 20px
-                    border: none
-                    border-radius: 5px
-                &__search__icon
-                    height: 20px
-                    background-color: white
-                    display: flex
-                    align-items: center
-                    &:hover
-                        cursor: pointer
+.nav__search
+    display: flex
+    justify-content: center
+    align-items: center
+    background-color: white 
+    border-radius: 5px
+    // border: 1px solid #ced2d1
+    margin-left: 10px
+    margin-right: 10px
+    @media (max-width: 1023px)
+        visibility: hidden
+    @media (max-width: 479px)
+        width: 5px
+.nav__search__input
+    height: 20px
+    border: 0
+    border-radius: 5px 0 0 5px
+    color: #cacecd
+.nav__search__icon
+    height: 20px
+    width: 25px
+    display: flex
+    align-items: center
+    justify-content: center
+
 main 
     width: 100%
     display: block
