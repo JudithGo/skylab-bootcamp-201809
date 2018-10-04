@@ -1,13 +1,14 @@
 var safeBox = {
-    password: '123',
-    
-    saveSecret: function(secret,password){
 
+    saveSecret: function(secret,password){
+    
     },
     getSecret: function(password){
 
     }
+
 }
+
 
 
 
@@ -16,6 +17,8 @@ var safeBox = {
 // var secret = safeBox.getSecret('password')
 
 // console.log(secret)
+
+
 
 
 
