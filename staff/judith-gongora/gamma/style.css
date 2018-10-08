@@ -208,12 +208,22 @@ nav .burger__bar {
   flex-wrap: wrap;
   max-width: 1200px;
 }
+@media (max-width: 900px) {
+  .main__info {
+    flex-direction: column;
+  }
+}
 
 .group {
   min-width: 310px;
   margin: 10px 0px 10px 0px;
   max-width: 30%;
   font-weight: lighter;
+}
+@media (max-width: 900px) {
+  .group {
+    max-width: 100%;
+  }
 }
 .group p {
   font-size: 15px;
@@ -261,15 +271,17 @@ footer {
   background-color: #1B222A;
   color: white;
 }
-.footer__nav a {
+
+.ul__footer a {
   text-decoration: none;
   color: white;
 }
-.footer__nav a:hover {
+.ul__footer a:hover {
   color: #1caa98;
 }
-.footer__nav li {
+.ul__footer li {
   margin-right: 20px;
+  display: inline-block;
 }
 
 /*# sourceMappingURL=style.css.map */
