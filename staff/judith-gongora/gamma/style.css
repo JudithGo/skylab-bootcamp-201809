@@ -35,7 +35,6 @@ nav .burger {
   right: 1em;
   width: 2.5em;
   padding: 0.6em 0 0;
-  transition: right 0.5s cubic-bezier(0.45, 0, 0.3, 0.95);
   cursor: pointer;
 }
 nav .burger__bar {
@@ -72,19 +71,6 @@ nav .burger__bar {
 }
 .nav-wrapper ul li a:hover {
   color: #1caa98;
-}
-
-.overlay {
-  z-index: 0;
-  display: block;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease-in-out;
 }
 
 #nav-toggle:checked ~ .burger {
@@ -238,10 +224,20 @@ nav .burger__bar {
   justify-content: center;
   background-color: #1caa98;
 }
+@media (max-width: 900px) {
+  .main__feature {
+    flex-direction: column;
+  }
+}
 
 .features1 {
   margin: 30px 100px 30px 0px;
   color: white;
+}
+@media (max-width: 900px) {
+  .features1 {
+    margin-left: 50px;
+  }
 }
 .features1 h1 {
   margin-bottom: -10px;
@@ -257,6 +253,12 @@ nav .burger__bar {
 .features2 {
   margin-top: 30px;
   margin-left: 100px;
+}
+@media (max-width: 900px) {
+  .features2 {
+    margin-left: 50px;
+    margin-top: -30px;
+  }
 }
 .features2 img {
   width: 200px;

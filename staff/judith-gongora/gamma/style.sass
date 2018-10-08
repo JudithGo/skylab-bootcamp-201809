@@ -14,17 +14,13 @@ header
     display: flex
     justify-content: flex-start
     align-items: center
-    // .container
-    //     display: grid
-    //     grid-template-columns: 70px auto
     div
-        // grid-column-start: 2
         margin-left: 20px
         p 
             font-size: 1.2em
             color: $turquesa-color
 
-#nav-toggle 
+#nav-toggle //input checkbox
     display: none
     h1 
         text-align: center
@@ -32,7 +28,7 @@ header
         font-size: 2em
         color: $primary-color
 
-nav .burger 
+nav .burger //BURGER SPANS
     box-sizing: border-box
     display: block
     position: fixed
@@ -40,7 +36,7 @@ nav .burger
     right: 1em
     width: 2.5em
     padding: 0.6em 0 0
-    transition: right 0.5s cubic-bezier(.45,0,.3,.95)
+    // transition: right 0.5s cubic-bezier(.45,0,.3,.95)
     cursor: pointer
 
     &__bar 
@@ -51,23 +47,17 @@ nav .burger
         border-radius: 1px
         transition: 0.3s cubic-bezier(.45,0,.3,.95)
 
-.nav-wrapper 
+.nav-wrapper //MENU
     position: fixed
     top: 0
     right: 0
-    // height: 350px
     width: 150px
     background: $white-color
-    transform: translateX(100%)
+    transform: translateX(100%) //Traslada el div un 100% de pixeles sobre el eje X
     transition: transform 0.4s cubic-bezier(.45,0,.3,.95)
-
     ul 
         list-style: none
         padding: 0
-        
-        
-        // margin-left: 300px
-
         li 
             padding: 0.8em
             text-align: center
@@ -81,18 +71,18 @@ nav .burger
                 &:hover 
                     color: $turquesa-color
 
-.overlay 
-    z-index: 0
-    display: block
-    position: fixed
-    top: 0
-    right: 0
-    bottom: 0
-    left: 0
-    // background: $turquesa-color
-    opacity: 0
-    pointer-events: none
-    transition: opacity 0.3s ease-in-out
+// .overlay 
+//     z-index: 0
+//     display: block
+//     position: fixed
+//     top: 0
+//     right: 0
+//     bottom: 0
+//     left: 0
+//     // background: $turquesa-color
+//     opacity: 0
+//     pointer-events: none
+//     transition: opacity 0.3s ease-in-out
 
 #nav-toggle:checked ~ 
     .burger 
@@ -208,17 +198,18 @@ nav .burger
     img 
         width: 100%
         border: 1px solid #f2edec
-    // button 
-    //     border: 1px solid #f2edec
 
 .main__feature
     display: flex
     justify-content: center
     background-color: $turquesa-color
+    @media (max-width: 900px)
+        flex-direction: column
 .features1
-    
     margin: 30px 100px 30px 0px
     color: white
+    @media (max-width: 900px)
+        margin-left: 50px
     h1 
         margin-bottom: -10px
         margin-left: 10px
@@ -230,6 +221,9 @@ nav .burger
 .features2
     margin-top: 30px
     margin-left: 100px
+    @media (max-width: 900px)
+        margin-left: 50px
+        margin-top: -30px
     img 
         width: 200px
 
