@@ -4,24 +4,30 @@ var safeBox;
 (function () {
     var _password;
     var _user;
+    var _email;
     safeBox = {
-        saveSecret: function (user, password) {
-            // if (typeof user !== 'string' || !user.trim().length) alert('invalid username')
-            // else if (typeof password !== 'string' || !password.trim().length) alert('invalid password');
-            // else{
+        register: function (user, email, password, onSuccess, onFail) {
+            if (!user || !user.trim().length) onFail('invalid user');
+            else if (!email || !email.trim().length) onFail('invalid email');
+            else if (!password || !password.trim().length) onFail('invalid password');
+            else {
                 _user = user;
                 _password = password;
-            // }
+                _email = email;
+                onSuccess();
+            }
+           
         },
 
-        retrieveSecret: function (user, password) {
-            // if (typeof user !== 'string' || !user.trim().length) alert('invalid username');
-
-            // if (typeof password !== 'string' || !password.trim().length) alert('invalid password');
-
-            if (user === _user && password === _password) return true;
-            else return false;  
-            // if (user === _user && password !== _password) throw Error('invalid password');     
-        }     
+        login: function (user, password, onSuccess, onFail) {
+            if (!user || !user.trim().length) onFail('invalid user');
+            else if (!password || !password.trim().length) onFail('invalid password');
+            else if (user) {
+                if (user === _user && password === _password) {
+                    onSuccess(user);
+                }
+                else onFail('wrong credentials!');
+            }
+        }
     };
 })();

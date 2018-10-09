@@ -105,6 +105,7 @@ function Register(title, tag, registerCallback, backCallback) {
     this.lbl_email.innerText = 'Email';
     this.div_email.appendChild(this.lbl_email);
     this.email = document.createElement('input');
+    this.email.className='__email';
     this.div_email.appendChild(this.email);
     this.form.appendChild(this.div_email);
 
