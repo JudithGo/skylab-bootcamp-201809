@@ -16,7 +16,7 @@ var register = new Register('Register', 'section', function () {
     var user = document.querySelector('.__username').value;
     var email =  document.querySelector('.__email').value;
     var password =  document.querySelector('.__password').value;
-    safeBox.register(user, email, password,
+    logic.register(user, email, password,
         function () {
             register.hide();
             login.show();
@@ -36,7 +36,7 @@ document.body.appendChild(register.element);
 var login = new Login('Login', 'section', function () {
     var user = document.querySelector('.__username').value;
     var password =  document.querySelector('.__password').value;
-    safeBox.login(user, password, 
+    logic.login(user, password, 
         function(user) {
             login.hide();
 

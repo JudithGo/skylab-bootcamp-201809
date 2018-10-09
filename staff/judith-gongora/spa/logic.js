@@ -1,11 +1,11 @@
-// safe-box.js
+// logic.js
 
-var safeBox;
+var logic;
 (function () {
     var _password;
     var _user;
     var _email;
-    safeBox = {
+    logic = {
         register: function (user, email, password, onSuccess, onFail) {
             if (!user || !user.trim().length) onFail('invalid user');
             else if (!email || !email.trim().length) onFail('invalid email');
@@ -16,7 +16,7 @@ var safeBox;
                 _email = email;
                 onSuccess();
             }
-           
+            
         },
 
         login: function (user, password, onSuccess, onFail) {
