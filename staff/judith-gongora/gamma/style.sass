@@ -36,16 +36,18 @@ nav .burger //BURGER SPANS
     right: 1em
     width: 2.5em
     padding: 0.6em 0 0
-    // transition: right 0.5s cubic-bezier(.45,0,.3,.95)
+    transition: right 0.5s cubic-bezier(.45,0,.3,.95)
     cursor: pointer
+   
 
     &__bar 
         height: 3px
         width: 70%
-        background: $turquesa-color
+        background: $secondary-color
         margin: 0 auto 0.2em
         border-radius: 1px
         transition: 0.3s cubic-bezier(.45,0,.3,.95)
+        // border: 1px solid $secondary-color
 
 .nav-wrapper //MENU
     position: fixed
@@ -113,7 +115,7 @@ nav .burger //BURGER SPANS
         opacity: 0.5
         pointer-events: auto
 
-@media (min-width: 900px)
+@media (min-width: $breakpoint-desktop)
     .gamma
         margin-left: 17%
     nav 
@@ -153,14 +155,14 @@ nav .burger //BURGER SPANS
         background-image: url('img/site_showcase_bg.jpg')
         background-size: 100%
         // justify-content: flex-start
-    @media (min-width: 900px)
+    @media (min-width: $breakpoint-desktop)
         height: 300px
     
 
 .img  
     @media (max-width: 520px)
         text-align: center
-    @media (min-width: 581px) and  (max-width: 900px) 
+    @media (min-width: 581px) and  (max-width: $breakpoint-desktop) 
         margin-left: 15%   
 
 .img2
@@ -184,14 +186,14 @@ nav .burger //BURGER SPANS
     margin: 20px
     flex-wrap: wrap
     max-width: 1200px
-    @media (max-width: 900px)   
+    @media (max-width: $breakpoint-desktop)   
         flex-direction: column
 .group
     min-width: 310px
     margin: 10px 0px 10px 0px
     max-width: 30%
     font-weight: lighter
-    @media (max-width: 900px)   
+    @media (max-width: $breakpoint-desktop)   
         max-width: 100%
     p 
         font-size: 15px
@@ -203,12 +205,12 @@ nav .burger //BURGER SPANS
     display: flex
     justify-content: center
     background-color: $turquesa-color
-    @media (max-width: 900px)
+    @media (max-width: $breakpoint-desktop)
         flex-direction: column
 .features1
     margin: 30px 100px 30px 0px
     color: white
-    @media (max-width: 900px)
+    @media (max-width: $breakpoint-desktop)
         margin-left: 50px
     h1 
         margin-bottom: -10px
@@ -221,7 +223,7 @@ nav .burger //BURGER SPANS
 .features2
     margin-top: 30px
     margin-left: 100px
-    @media (max-width: 900px)
+    @media (max-width: $breakpoint-desktop)
         margin-left: 50px
         margin-top: -30px
     img 

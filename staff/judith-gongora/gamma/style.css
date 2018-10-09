@@ -35,12 +35,13 @@ nav .burger {
   right: 1em;
   width: 2.5em;
   padding: 0.6em 0 0;
+  transition: right 0.5s cubic-bezier(0.45, 0, 0.3, 0.95);
   cursor: pointer;
 }
 nav .burger__bar {
   height: 3px;
   width: 70%;
-  background: #1caa98;
+  background: #888888;
   margin: 0 auto 0.2em;
   border-radius: 1px;
   transition: 0.3s cubic-bezier(0.45, 0, 0.3, 0.95);
