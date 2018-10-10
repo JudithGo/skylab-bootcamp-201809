@@ -219,22 +219,6 @@ nav .burger //BURGER SPANS
     img 
         width: 200px
 
-
-footer 
-    display: flex
-    background-color: #1B222A
-.footer__nav
-    background-color: #1B222A
-    color: white
-.ul__footer
-    a 
-        text-decoration: none
-        color: white 
-        &:hover 
-            color: $turquesa-color
-    li 
-        margin-right: 20px
-        display: inline-block
     
 //accordion about.html
 .group__accordion
@@ -248,6 +232,7 @@ footer
 .tab  
     margin: 5px 
     border: 1px solid $secondary-color
+    border-radius: 3px
 .tab label
     position: relative
     display: block
@@ -280,3 +265,47 @@ footer
 .accordion input:checked ~ .tab-content  
     display: block 
     
+//Form
+.main__feature h1 
+    color: white
+.group__form
+    min-width: 220px
+    @media (min-width: $breakpoint-desktop)
+        min-width: 65%
+        max-width: 65%
+.input 
+    font-family: Arial, Helvetica, sans-serif
+.input input
+    width: 99%
+    border: 1px solid $secondary-color
+    color: $primary-color
+    line-height: 2
+    padding-left: 10px
+    color: black
+    border-radius: 3px
+.input p 
+    margin-bottom: 5px
+    font-weight: bold
+.group__form button
+    margin: 10px
+    border: 1px solid $secondary-color
+    padding: 5px
+    border-radius: 3px
+    margin-left: 0
+
+
+footer 
+    display: flex
+    background-color: #1B222A
+.footer__nav
+    background-color: #1B222A
+    color: white
+.ul__footer
+    a 
+        text-decoration: none
+        color: white 
+        &:hover 
+            color: $turquesa-color
+    li 
+        margin-right: 20px
+        display: inline-block

@@ -271,28 +271,6 @@ nav .burger__bar {
   width: 200px;
 }
 
-footer {
-  display: flex;
-  background-color: #1B222A;
-}
-
-.footer__nav {
-  background-color: #1B222A;
-  color: white;
-}
-
-.ul__footer a {
-  text-decoration: none;
-  color: white;
-}
-.ul__footer a:hover {
-  color: #1caa98;
-}
-.ul__footer li {
-  margin-right: 20px;
-  display: inline-block;
-}
-
 .group__accordion {
   min-width: 220px;
 }
@@ -311,6 +289,7 @@ footer {
 .tab {
   margin: 5px;
   border: 1px solid #888888;
+  border-radius: 3px;
 }
 
 .tab label {
@@ -338,6 +317,69 @@ footer {
  * when checkbox(label) is checked */
 .accordion input:checked ~ .tab-content {
   display: block;
+}
+
+.main__feature h1 {
+  color: white;
+}
+
+.group__form {
+  min-width: 220px;
+}
+@media (min-width: 900px) {
+  .group__form {
+    min-width: 65%;
+    max-width: 65%;
+  }
+}
+
+.input {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.input input {
+  width: 99%;
+  border: 1px solid #888888;
+  color: #f8f8f8;
+  line-height: 2;
+  padding-left: 10px;
+  color: black;
+  border-radius: 3px;
+}
+
+.input p {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.group__form button {
+  margin: 10px;
+  border: 1px solid #888888;
+  padding: 5px;
+  border-radius: 3px;
+  margin-left: 0;
+}
+
+footer {
+  display: flex;
+  background-color: #1B222A;
+}
+
+.footer__nav {
+  background-color: #1B222A;
+  color: white;
+}
+
+.ul__footer a {
+  text-decoration: none;
+  color: white;
+}
+.ul__footer a:hover {
+  color: #1caa98;
+}
+.ul__footer li {
+  margin-right: 20px;
+  display: inline-block;
 }
 
 /*# sourceMappingURL=style.css.map */
