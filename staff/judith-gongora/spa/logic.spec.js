@@ -12,7 +12,7 @@ describe('logic', function () {
         password = '12345';
 
     });
-
+    //REGISTER
     describe('register', function () {
         it('should save the inputs', function () {
             logic.register(user, email, password,
@@ -20,34 +20,59 @@ describe('logic', function () {
                     error = false;
                 },
                 function (message) {
-                    msg = message;
-                    error = true;
+                    throw Error (message);
                 }
             );
             expect(!error).toBeTruthy();
         });
+        //User empty
         it('should throw an error if user is empty', function () {
             user ="";
             logic.register(user, email, password,
                 function () {
-                    error = false;
+                    throw Error ();
                 },
                 function (message) {
                     msg = message;
-                    error = true;
                 }
             );
             expect(msg).toEqual('invalid user');
         });
+        //User undefined
+        it('should throw an error if user is undefined', function () {
+            user =undefined;
+            logic.register(user, email, password,
+                function () {
+                    throw Error ();
+                },
+                function (message) {
+                    msg = message;
+                }
+            );
+            expect(msg).toEqual('invalid user');
+        });
+        //User number
+        it('should throw an error if user is number', function () {
+            user =13;
+            logic.register(user, email, password,
+                function () {
+                    throw Error ();
+                },
+                function (message) {
+                    msg = message;
+                }
+            );
+            expect(msg).toEqual('invalid user');
+        });
+
         it('should throw an error if email is empty', function () {
             email ="";
             logic.register(user, email, password,
                 function () {
-                    error = false;
+                    throw Error ();
                 },
                 function (message) {
                     msg = message;
-                    error = true;
                 }
             );
             expect(msg).toEqual('invalid email');
@@ -56,11 +81,10 @@ describe('logic', function () {
             password ="";
             logic.register(user, email, password,
                 function () {
-                    error = false;
+                    throw Error ();
                 },
                 function (message) {
                     msg = message;
-                    error = true;
                 }
             );
             expect(msg).toEqual('invalid password');
@@ -81,8 +105,7 @@ describe('logic', function () {
                     error = false;
                 },
                 function (message) {
-                    msg = message;
-                    error = true;
+                    throw Error (message);
                 }
             );
             expect(!error).toBeTruthy();
@@ -92,11 +115,10 @@ describe('logic', function () {
             user ="";
             logic.login(user, password,
                 function () {
-                    error = false;
+                    throw Error ();
                 },
                 function (message) {
                     msg = message;
-                    error = true;
                 }
             );
             expect(msg).toEqual('invalid user');
@@ -106,11 +128,10 @@ describe('logic', function () {
             password ="";
             logic.login(user, password,
                 function () {
-                    error = false;
+                    throw Error ();
                 },
                 function (message) {
                     msg = message;
-                    error = true;
                 }
             );
             expect(msg).toEqual('invalid password');
@@ -120,11 +141,10 @@ describe('logic', function () {
             password ="123";
             logic.login(user, password,
                 function () {
-                    error = false;
+                    throw Error ();
                 },
                 function (message) {
                     msg = message;
-                    error = true;
                 }
             );
             expect(msg).toEqual('wrong credentials!');
