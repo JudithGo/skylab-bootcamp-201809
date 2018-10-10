@@ -319,10 +319,12 @@ nav .burger__bar {
   display: block;
 }
 
-.main__feature h1 {
+.main__title {
+  display: flex;
+  background-color: #1caa98;
   color: white;
+  padding-left: 20px;
 }
-
 .group__form {
   min-width: 220px;
 }
