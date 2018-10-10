@@ -17,6 +17,10 @@ header div p {
   color: #1caa98;
 }
 
+button {
+  padding: 10px;
+}
+
 #nav-toggle {
   display: none;
 }
@@ -37,6 +41,7 @@ nav .burger {
   padding: 0.6em 0 0;
   transition: right 0.5s cubic-bezier(0.45, 0, 0.3, 0.95);
   cursor: pointer;
+  z-index: 1;
 }
 nav .burger__bar {
   height: 3px;
@@ -48,6 +53,7 @@ nav .burger__bar {
 }
 
 .nav-wrapper {
+  z-index: 1;
   position: fixed;
   top: 0;
   right: 0;
@@ -285,6 +291,53 @@ footer {
 .ul__footer li {
   margin-right: 20px;
   display: inline-block;
+}
+
+.group__accordion {
+  min-width: 220px;
+}
+@media (min-width: 900px) {
+  .group__accordion {
+    min-width: 65%;
+    max-width: 65%;
+  }
+}
+
+.accordion-title {
+  margin-bottom: 40px;
+  margin-top: 20px;
+}
+
+.tab {
+  margin: 5px;
+  border: 1px solid #888888;
+}
+
+.tab label {
+  position: relative;
+  display: block;
+  padding: 0 0 0 20px;
+  line-height: 3;
+  cursor: pointer;
+  background: #f8f8f8;
+  border: 0.5px solid #f8f8f8;
+  z-index: 0;
+}
+
+/* Hide the Radio Button
+ * and the Panel Contents */
+.accordion input[name=panel],
+.tab-content {
+  display: none;
+  padding: 10px;
+  border-top: 1px solid #888888;
+  background-color: white;
+}
+
+/* Display Panel Content 
+ * when checkbox(label) is checked */
+.accordion input:checked ~ .tab-content {
+  display: block;
 }
 
 /*# sourceMappingURL=style.css.map */
