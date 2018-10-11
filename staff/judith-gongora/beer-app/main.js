@@ -13,38 +13,40 @@ form.addEventListener('submit', function (event) {
         if (uls.length) {
             document.body.removeChild(uls[0]);
         }
+        if (document.getElementsByTagName('section').length) {
+            document.body.removeChild(document.getElementsByTagName('section')[0]);
+        }
 
         if (beers.length) {
             var ul = document.createElement('ul');
 
             beers.forEach(function (beer) {
-                
-                // console.log(beer.id, beer.name);
 
                 var li = document.createElement('li');
-                li.innerText = beer.name;
 
-                li.addEventListener('click', function(e){
+                var a = document.createElement('a');
+                li.href = '#';
+                a.innerText = beer.name;
+                li.appendChild(a);
+
+                a.addEventListener('click', function(e){
                     logic.getDetail(beer.id, 
-                        function(url, detail){
-                            if (document.getElementsByTagName('img').length) {
-                                document.body.removeChild(document.getElementsByTagName('img')[0]);
+                        function(url, text){
+                            if (document.getElementsByTagName('section').length) {
+                                document.body.removeChild(document.getElementsByTagName('section')[0]);
                             }
-                            if (document.getElementsByTagName('h2').length) {
-                                document.body.removeChild(document.getElementsByTagName('h2')[0]);
-                            }
-                            if (document.getElementsByTagName('p').length) {
-                                document.body.removeChild(document.getElementsByTagName('p')[0]);
-                            }
+                           
+                            var detail = document.createElement('section');
+                            document.body.appendChild(detail);
                             var title = document.createElement('h2');
                             title.innerText = beer.name;
-                            document.body.appendChild(title);
+                            detail.appendChild(title);
                             var description = document.createElement('p');
-                            description.innerText = detail;
-                            document.body.appendChild(description);
+                            description.innerText = text;
+                            detail.appendChild(description);
                             var img = document.createElement('img');
                             img.src = url;
-                            document.body.appendChild(img);
+                            detail.appendChild(img);
                         })
                     }
                 );
