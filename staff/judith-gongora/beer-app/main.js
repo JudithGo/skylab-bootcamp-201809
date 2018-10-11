@@ -14,6 +14,7 @@ function search(query, callback) {
     // };
 
     // xhr.addEventListener("progress", updateProgress);
+
     xhr.addEventListener("load", function () {
         var res = JSON.parse(xhr.responseText);
         console.log(res);
@@ -23,6 +24,7 @@ function search(query, callback) {
     xhr.addEventListener("error", function () {
         callback([]);
     });
+
     // xhr.addEventListener("abort", transferCanceled);
 
     xhr.open('get', 'https://quiet-inlet-67115.herokuapp.com/api/search/all?q=' + query);
@@ -74,6 +76,7 @@ form.addEventListener('submit', function (event) {
             var ul = document.createElement('ul');
 
             beers.forEach(function (beer) {
+                
                 // console.log(beer.id, beer.name);
 
                 var li = document.createElement('li');
