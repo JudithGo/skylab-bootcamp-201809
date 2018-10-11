@@ -64,7 +64,7 @@ describe('logic', function () {
             );
             expect(msg).toEqual('invalid user');
         });
-
+        //email empty
         it('should throw an error if email is empty', function () {
             email ="";
             logic.register(user, email, password,
@@ -77,8 +77,61 @@ describe('logic', function () {
             );
             expect(msg).toEqual('invalid email');
         });
-        it('should throw an error if password is empty', function () {
-            password ="";
+        //Email undefined
+        it('should throw an error if email is undefined', function () {
+            email ="";
+            logic.register(user, email, password,
+                function () {
+                    throw Error ();
+                },
+                function (message) {
+                    msg = message;
+                }
+            );
+            expect(msg).toEqual('invalid email');
+        });
+        //Email number
+        it('should show an error if email is a number', function () {
+            email =23;
+            logic.register(user, email, password,
+                function () {
+                    throw Error ();
+                },
+                function (message) {
+                    msg = message;
+                }
+            );
+            expect(msg).toEqual('invalid email');
+        });
+        //Password undefined
+        it('should show an error if password is undefined', function () {
+            password = undefined;
+            logic.register(user, email, password,
+                function () {
+                    throw Error ();
+                },
+                function (message) {
+                    msg = message;
+                }
+            );
+            expect(msg).toEqual('invalid password');
+        });
+        //Password empty
+        it('should show an error if password is undefined', function () {
+            password = "";
+            logic.register(user, email, password,
+                function () {
+                    throw Error ();
+                },
+                function (message) {
+                    msg = message;
+                }
+            );
+            expect(msg).toEqual('invalid password');
+        });
+        //Password number
+        it('should show an error if password is undefined', function () {
+            password = 23;
             logic.register(user, email, password,
                 function () {
                     throw Error ();
@@ -110,8 +163,8 @@ describe('logic', function () {
             );
             expect(!error).toBeTruthy();
         });
-        
-        it('should throw an error if user is empty', function () {
+        //User empty
+        it('should show an error if user is empty', function () {
             user ="";
             logic.login(user, password,
                 function () {
@@ -123,8 +176,34 @@ describe('logic', function () {
             );
             expect(msg).toEqual('invalid user');
         });
-        
-        it('should throw an error if password is empty', function () {
+        //User undefined
+        it('should show an error if user is undefined', function () {
+            user = undefined;
+            logic.login(user, password,
+                function () {
+                    throw Error ();
+                },
+                function (message) {
+                    msg = message;
+                }
+            );
+            expect(msg).toEqual('invalid user');
+        });
+        //User number
+        it('should show an error if user is number', function () {
+            user =12;
+            logic.login(user, password,
+                function () {
+                    throw Error ();
+                },
+                function (message) {
+                    msg = message;
+                }
+            );
+            expect(msg).toEqual('invalid user');
+        });
+        //password empty
+        it('should show an error if password is empty', function () {
             password ="";
             logic.login(user, password,
                 function () {
@@ -136,8 +215,34 @@ describe('logic', function () {
             );
             expect(msg).toEqual('invalid password');
         });
-        
-        it('should throw an error with wrong credentials', function () {
+        //password undefined
+        it('should show an error if password is undefined', function () {
+            password = undefined;
+            logic.login(user, password,
+                function () {
+                    throw Error ();
+                },
+                function (message) {
+                    msg = message;
+                }
+            );
+            expect(msg).toEqual('invalid password');
+        });
+        //password empty
+        it('should throw an error if password is empty', function () {
+            password =11;
+            logic.login(user, password,
+                function () {
+                    throw Error ();
+                },
+                function (message) {
+                    msg = message;
+                }
+            );
+            expect(msg).toEqual('invalid password');
+        });
+        //Wrong credentials
+        it('should show an error with wrong credentials', function () {
             password ="123";
             logic.login(user, password,
                 function () {

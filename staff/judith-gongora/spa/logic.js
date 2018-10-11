@@ -8,8 +8,8 @@ var logic;
     logic = {
         register: function (user, email, password, onSuccess, onFail) {
             if (typeof user !== 'string' || !user || !user.trim().length) onFail('invalid user');
-            else if (typeof user !== 'string' || !email || !email.trim().length) onFail('invalid email');
-            else if (typeof user !== 'string' || !password || !password.trim().length) onFail('invalid password');
+            else if (typeof email !== 'string' || !email || !email.trim().length) onFail('invalid email');
+            else if (typeof password !== 'string' || !password || !password.trim().length) onFail('invalid password');
             else if (typeof onSuccess !== 'function') throw Error (onSuccess + ' is not a function');
             else if (typeof onFail !== 'function') throw Error (onFail + ' is not a function');
             else {
@@ -23,7 +23,7 @@ var logic;
 
         login: function (user, password, onSuccess, onFail) {
             if (typeof user !== 'string' || !user || !user.trim().length) onFail('invalid user');
-            else if (typeof user !== 'string' || !password || !password.trim().length) onFail('invalid password');
+            else if (typeof password !== 'string' || !password || !password.trim().length) onFail('invalid password');
             else if (typeof onSuccess !== 'function') throw Error (onSuccess + ' is not a function');
             else if (typeof onFail !== 'function') throw Error (onFail + ' is not a function');
             else if (user) {
