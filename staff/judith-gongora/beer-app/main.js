@@ -16,7 +16,7 @@ function search(query, callback) {
     // xhr.addEventListener("progress", updateProgress);
     xhr.addEventListener("load", function () {
         var res = JSON.parse(xhr.responseText);
-
+        console.log(res);
         callback(res);
     });
 
@@ -31,7 +31,27 @@ function search(query, callback) {
 }
 
 function retrieveBeer(id, callback) {
-    // TODO call endpoint https://quiet-inlet-67115.herokuapp.com/api/beer/ + id
+    var xhr = new XMLHttpRequest();
+
+    xhr.addEventListener("load", function () {
+        var res = JSON.parse(xhr.responseText);
+        if (res.labels)
+        var url = res.labels.medium;
+        else url= 'https://even3.blob.core.windows.net/logos/canecachoppdelivery.fe0135fdb58c4241b279.png';
+        callback(url);
+    });
+
+    xhr.addEventListener("error", function () {
+        callback([]);
+    });
+
+    xhr.open('get', 'https://quiet-inlet-67115.herokuapp.com/api/beer/' + id);
+
+    xhr.send();
+
+
+    
+
 }
 
 var form = document.getElementById('search-form');
@@ -57,8 +77,26 @@ form.addEventListener('submit', function (event) {
                 // console.log(beer.id, beer.name);
 
                 var li = document.createElement('li');
-                li.innerText = beer.name + ' ' + (beer.id);
-                li.addEventListener('onclick', function)
+                li.innerText = beer.name;
+
+                li.addEventListener('click', function(e){
+                    retrieveBeer(beer.id, 
+                        function(url){
+                            if (document.getElementsByTagName('img').length) {
+                                document.body.removeChild(document.getElementsByTagName('img')[0]);
+                            }
+                            if (document.getElementsByTagName('h2').length) {
+                                document.body.removeChild(document.getElementsByTagName('h2')[0]);
+                            }
+                            var title = document.createElement('h2');
+                            title.innerText = beer.name;
+                            document.body.appendChild(title);
+                            var img = document.createElement('img');
+                            img.src = url;
+                            document.body.appendChild(img);
+                        })
+                    }
+                );
 
                 // TODO on click on beer do retrieve beer and show beer below
 
