@@ -1,4 +1,6 @@
 const logic = {
+    token: 'BQDbiOuvDE4GwIVu67nfrQjO6mCGeBYQnCaCwBurs3HAEMeg16yPn0_r4lgj6fwCDAeF4u5Xl_y6JTYV012vIEILUTYboxFZkysccoVVB_ItzXRso8oi2vSs0FOdA4xf-E9Lg5qZQXz91AB1dTagAGGQPZwL4TE79DoCcbdpJaA-BZ_c7UrLxOo2BqdWdUKn4xgIE-XJms672_ti_5zDquWEBdAAg6opm8aay2FSTdOLgeE5PmAQbiO3ZDdO8dYpeptQExQMAbwfyHymZg',
+
     searchArtists(query) {
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest()
@@ -13,11 +15,9 @@ const logic = {
                 reject() // TODO
             })
 
-            xhr.open('get', 'https://api.spotify.com/v1/search?type=artist&query=' + query)
+            xhr.open('get', 'https://api.spotify.com/v1/search?type=artist&query=' + query) 
 
-            var token = 'BQCHE2Q4zFwGUT2B6ecSLCnYXsJRSwmw1yp5wx3ubGSBRFSh20GXtUGtrD9dkdIsMCOK5q7M04amDUC3BjYj5khufzHhEXDQOkCVGjynoYIdnMiZ0nVeoq3TNRYu8U34IuMh-O1Hj8m7GmCpT8ATOtIAddhLnROCUhf4a4NuetmCU0XzBlwQF9PF-si3KVZlIXvErPqj0h7A1Y5jqpzlTjCao2NnF5YfvaWFfOKpKrtB2CD0xsiOs2kN8AAO_MhB-0USzBYIE8XcjA-HUw'
-
-            xhr.setRequestHeader('authorization', 'Bearer ' + token)
+            xhr.setRequestHeader('authorization', 'Bearer ' + this.token)
 
             xhr.send()
         })
@@ -39,9 +39,7 @@ const logic = {
 
             xhr.open('get', 'https://api.spotify.com/v1/' + 'artists/' + id + '/albums')
 
-            var token = 'BQCHE2Q4zFwGUT2B6ecSLCnYXsJRSwmw1yp5wx3ubGSBRFSh20GXtUGtrD9dkdIsMCOK5q7M04amDUC3BjYj5khufzHhEXDQOkCVGjynoYIdnMiZ0nVeoq3TNRYu8U34IuMh-O1Hj8m7GmCpT8ATOtIAddhLnROCUhf4a4NuetmCU0XzBlwQF9PF-si3KVZlIXvErPqj0h7A1Y5jqpzlTjCao2NnF5YfvaWFfOKpKrtB2CD0xsiOs2kN8AAO_MhB-0USzBYIE8XcjA-HUw'
-
-            xhr.setRequestHeader('authorization', 'Bearer ' + token)
+            xhr.setRequestHeader('authorization', 'Bearer ' + this.token)
 
             xhr.send()
         })
@@ -63,32 +61,7 @@ const logic = {
 
             xhr.open('get', 'https://api.spotify.com/v1/' + 'albums/' + id + '/tracks')
 
-            var token = 'BQCHE2Q4zFwGUT2B6ecSLCnYXsJRSwmw1yp5wx3ubGSBRFSh20GXtUGtrD9dkdIsMCOK5q7M04amDUC3BjYj5khufzHhEXDQOkCVGjynoYIdnMiZ0nVeoq3TNRYu8U34IuMh-O1Hj8m7GmCpT8ATOtIAddhLnROCUhf4a4NuetmCU0XzBlwQF9PF-si3KVZlIXvErPqj0h7A1Y5jqpzlTjCao2NnF5YfvaWFfOKpKrtB2CD0xsiOs2kN8AAO_MhB-0USzBYIE8XcjA-HUw'
-
-            xhr.setRequestHeader('authorization', 'Bearer ' + token)
-
-            xhr.send()
-        })
-    },
-    playTrack(id) {
-        return new Promise((resolve, reject) => {
-            var xhr = new XMLHttpRequest()
-
-            xhr.addEventListener('load', function () {
-                var res = JSON.parse(xhr.responseText)
-
-                resolve(res)
-            })
-
-            xhr.addEventListener('error', function () {
-                reject() // TODO
-            })
-
-            xhr.open('get', 'https://api.spotify.com/v1/' + 'tracks/' + id)
-
-            var token = 'BQCHE2Q4zFwGUT2B6ecSLCnYXsJRSwmw1yp5wx3ubGSBRFSh20GXtUGtrD9dkdIsMCOK5q7M04amDUC3BjYj5khufzHhEXDQOkCVGjynoYIdnMiZ0nVeoq3TNRYu8U34IuMh-O1Hj8m7GmCpT8ATOtIAddhLnROCUhf4a4NuetmCU0XzBlwQF9PF-si3KVZlIXvErPqj0h7A1Y5jqpzlTjCao2NnF5YfvaWFfOKpKrtB2CD0xsiOs2kN8AAO_MhB-0USzBYIE8XcjA-HUw'
-
-            xhr.setRequestHeader('authorization', 'Bearer ' + token)
+            xhr.setRequestHeader('authorization', 'Bearer ' + this.token)
 
             xhr.send()
         })

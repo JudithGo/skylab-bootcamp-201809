@@ -85,20 +85,17 @@ function listTracks(tracks, name) {
     const $ul = $tracks.find('ul')
     const $h3 = $tracks.find('h4')
 
-    $h3.text('Tracks of the Album' + name)
+    $h3.text('Tracks of the Album ' + name)
     $ul.empty()
 
     tracks.forEach(track => {
         const $a = $(`<a href="#">${track.name}</a>`)
 
-        $a.click(() => {
-            console.log(track)
-            logic.playTrack(track.id, track.name)
-            .then(tracks => {
-                playTrack(tracks)
-            })
-            .catch(console.error)
-
+        $a.click(() => { 
+                let $audio = $playTrack.find('audio')
+                if (track.preview_url) $audio.attr("src",'' + track.preview_url + '')
+                else alert('No exist preview')
+                playTrack(track.name)
         })
 
         const $li = $('<li>')
@@ -109,16 +106,13 @@ function listTracks(tracks, name) {
     })
 }
 
-function playTrack(track, name) {
+function playTrack(name) {
     $playTrack.show()
 
-    const $h5 = $tracks.find('h5')
-    const $audio = $tracks.find('audio')
+    const $h5 = $playTrack.find('h5')
 
-    $h5.text('Listening' + name)
-    $audio.attr("src",track)
+    $h5.text('Listening ' + name)
 
-    $audio.attr('autoplay')
 
     
 }
