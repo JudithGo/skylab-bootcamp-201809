@@ -18,6 +18,6 @@ class Comment {
     }
 }
 
-// module.exports = { Post, Comment }
+module.exports = { Post, Comment }
  
-export default { Post, Comment}
+// export default { Post, Comment}

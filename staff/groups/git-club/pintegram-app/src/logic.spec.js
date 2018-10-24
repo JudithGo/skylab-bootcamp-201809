@@ -16,7 +16,7 @@ const { expect } = require('chai')
 
 describe('logic', () => {
     describe('users', () => {
-        describe('register', () => {
+        false && describe('register', () => {
             it('should succeed on correct data', () =>
                 logic.registerUser('John', 'Doe', `jd-${Math.random()}`, '123')
                     .then(() => expect(true).to.be.true)
@@ -44,7 +44,7 @@ describe('logic', () => {
             // TODO other cases
         })
 
-        describe('login', () => {
+        false && describe('login', () => {
             describe('with existing user', () => {
                 let username, password
 
@@ -113,7 +113,7 @@ describe('logic', () => {
         })
     })
 
-    describe('posts', () => {
+    false && describe('posts', () => {
         describe('create', () => {
             describe('with existing user', () => {
                 let username, password, text
@@ -178,7 +178,7 @@ describe('logic', () => {
             })
         })
 
-        describe('delete', () => {
+        false && describe('delete', () => {
             describe('with existing user', () => {
                 let username, password, text, postId
 
@@ -195,7 +195,7 @@ describe('logic', () => {
                 })
 
                 describe('with existing post', () => {
-                    beforeEach(() => 
+                    beforeEach(() =>
                         logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text)
                             .then(() => logic.listPosts())
                             .then(posts => postId = posts[0].id)
@@ -211,6 +211,9 @@ describe('logic', () => {
                 afterEach(() => logic.logout())
             })
         })
+
+
+
 
         // describe('update', () => {
         //     describe('with existing user', () => {
@@ -261,4 +264,287 @@ describe('logic', () => {
         //     })
         // })
     })
+    false && describe('logout', () => {
+        describe('with existing user', () => {
+            let username, password
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+            it('should succesfully log out', () => {
+
+                logic.logout(user => {
+                    expect(user._userId).to.equal(null)
+                    expect(user._token).to.equal(null)
+                    expect(user._posts).to.equal([])
+                    expect(user._postsUser).to.equal([])
+                    expect(user._postsAllUser).to.equal([])
+                    expect(user._likes).to.equal([])
+                    expect(user._follows).to.equal([])
+                    expect(user._followers).to.equal([])
+                    expect(user._postLiked).to.equal([])
+                    expect(user._comments).to.equal([])
+                    expect(user._postsOtherUser).to.equal([])
+                    expect(sessionStorage.getItem('userId')).to.equal(null)
+                    expect(sessionStorage.getItem('token')).to.equal(null)
+
+
+                })
+
+            })
+        })
+
+
+    })
+
+
+    false && describe('add like', () => {
+        describe('with existing user', () => {
+            let username, password, text, postId
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+                beforeEach(() =>
+                    logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text)
+                        .then(() => logic.listPosts())
+                        .then(posts => postId = posts[0].id)
+                )
+
+                it('should successfully add like to post', () =>
+
+                    logic.addLike(postId)
+                        .then(expect(logic._likes[logic._likes.length - 1]).to.equal(postId))
+                        .then(() => logic.listLikes())
+                        .then(likes => expect(likes.length).to.equal(1))
+
+                )
+
+                it('should fail on non-number postId (string)', () => {
+                    const postId = 'holacaracola'
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, `${postId} is not a number`)
+                })
+                it('should fail on non-number postId (Array)', () => {
+                    const postId = []
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, ` is not a number`)
+                })
+                it('should fail on non-number postId (object)', () => {
+                    const postId = {}
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, `[object Object] is not a number`)
+                })
+                it('should fail on non-number postId (boolean)', () => {
+                    const postId = true
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, `${postId} is not a number`)
+                })
+                it('should fail on non-number postId (undefined)', () => {
+                    const postId = undefined
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, `${postId} is not a number`)
+                })
+                it('should fail on non-number postId (null)', () => {
+                    const postId = null
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, `${postId} is not a number`)
+                })
+
+
+
+
+
+
+
+                afterEach(() => logic.logout())
+            })
+
+        })
+    })
+
+    false && describe('list likes', () => {
+        describe('with existing user', () => {
+            let username, password, text, postId
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+                beforeEach(() =>
+                    logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text)
+                        .then(() => logic.listPosts())
+                        .then(posts => postId = posts[0].id)
+                )
+
+                it('should successfully list likes on a liked post', () =>
+
+                     logic.addLike(postId)
+                        .then(expect(logic._likes[logic._likes.length - 1]).to.equal(postId))
+                        .then(() => logic.listLikes())
+                        .then(likes => expect(likes.length).to.equal(1))
+
+                )
+
+
+
+
+
+
+                afterEach(() => logic.logout())
+            })
+
+        })
+
+
+    })
+
+
+
+
+    false && describe('liked post', () => {
+        describe('with existing user', () => {
+            let username, password, text, postId
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+                beforeEach(() =>
+                    logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text)
+                        .then(() => logic.listPosts())
+                        .then(posts => postId = posts[0].id)
+                )
+
+                it('should successfully find liked post', () =>
+
+                    logic.addLike(postId)
+                        .then(expect(logic._likes[logic._likes.length - 1]).to.equal(postId))
+                        .then(() => logic.likedPost(postId))
+                        .then(like => expect(like).to.equal(true))
+
+                )
+                it('should fail on non-number postId (string)', () => {
+                    const postId = 'holacaracola'
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, `${postId} is not a number`)
+                })
+                it('should fail on non-number postId (Array)', () => {
+                    const postId = []
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, ` is not a number`)
+                })
+                it('should fail on non-number postId (object)', () => {
+                    const postId = {}
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, `[object Object] is not a number`)
+                })
+                it('should fail on non-number postId (boolean)', () => {
+                    const postId = true
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, `${postId} is not a number`)
+                })
+                it('should fail on non-number postId (undefined)', () => {
+                    const postId = undefined
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, `${postId} is not a number`)
+                })
+                it('should fail on non-number postId (null)', () => {
+                    const postId = null
+
+                    expect(() => logic.addLike(postId))
+                        .to.throw(Error, `${postId} is not a number`)
+                })
+
+
+
+
+                afterEach(() => logic.logout())
+            })
+
+        })
+
+
+    })
+
+    describe('retrieveUser', () => {
+        describe('with existing user', () => {
+            let username, password, text, postId
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+
+            it('should sucessfully retrieve name of required user', () => 
+                logic.retriveUser(logic._userId)
+                    .then(user => expect(user).to.equal(name))
+                    
+            )
+
+            afterEach(() => logic.logout())
+        })
+
+
+
+    })
+
+
+
+
 })

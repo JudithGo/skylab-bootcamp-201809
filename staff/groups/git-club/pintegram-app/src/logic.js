@@ -1,5 +1,5 @@
-import data from './data'
-// const data = require('./data')
+// import data from './data'
+const data = require('./data')
 
 const { Post, Comment } = data
 
@@ -131,7 +131,7 @@ const logic = {
 
     addLike(postId) {
 
-        if (typeof postId !== 'number') throw TypeError(`${postId} is not a string`)
+        if (typeof postId !== 'number') throw TypeError(`${postId} is not a number`)
 
         this._likes.push(postId)
 
@@ -172,6 +172,9 @@ const logic = {
     },
 
     retriveUser(userId) {
+
+        if(typeof userId !== 'string') throw TypeError(`${userId} is not a string`)
+        
         return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
             method: 'GET',
             headers: {
@@ -484,5 +487,5 @@ const logic = {
     //     }
 }
 
-export default logic
-// module.exports = logic
+// export default logic
+module.exports = logic
