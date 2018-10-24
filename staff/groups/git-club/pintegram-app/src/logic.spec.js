@@ -533,9 +533,46 @@ describe('logic', () => {
 
             it('should sucessfully retrieve name of required user', () => 
                 logic.retriveUser(logic._userId)
-                    .then(user => expect(user).to.equal(name))
+                    .then(user => expect(user).to.equal('John'))
                     
             )
+            it('should fail on non-string name (number)', () => {
+                const name = 6656537
+
+                expect(() => logic.retriveUser(name))
+                    .to.throw(Error, `${name} is not a string`)
+            })
+            it('should fail on non-string name (Array)', () => {
+                const name = []
+
+                expect(() => logic.retriveUser(name))
+                    .to.throw(Error, ` is not a string`)
+            })
+            it('should fail on non-string name (object)', () => {
+                const name = {}
+
+                expect(() => logic.retriveUser(name))
+                    .to.throw(Error, `[object Object] is not a string`)
+            })
+            it('should fail on non-string name (boolean)', () => {
+                const name = true
+
+                expect(() => logic.retriveUser(name))
+                    .to.throw(Error, `${name} is not a string`)
+            })
+            it('should fail on non-string name (undefined)', () => {
+                const name = undefined
+
+                expect(() => logic.retriveUser(name))
+                    .to.throw(Error, `${name} is not a string`)
+            })
+            it('should fail on non-string name (null)', () => {
+                const name = null
+
+                expect(() => logic.retriveUser(name))
+                    .to.throw(Error, `${name} is not a string`)
+            })
+
 
             afterEach(() => logic.logout())
         })

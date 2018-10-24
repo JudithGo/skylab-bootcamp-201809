@@ -174,7 +174,7 @@ const logic = {
     retriveUser(userId) {
 
         if(typeof userId !== 'string') throw TypeError(`${userId} is not a string`)
-        
+
         return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
             method: 'GET',
             headers: {
@@ -268,6 +268,8 @@ const logic = {
     },
 
     retrieveProfile() {
+
+        
         return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
             method: 'GET',
             headers: {
