@@ -38,11 +38,17 @@ class Post extends Component {
         
     }
 
+    handleUserSearch = (event) => {
+        event.preventDefault()
+        // const userSearch = this.state.user
+        this.props.onUserSearch(this.state.user)
+    }
+
     render() {
         return <article className="post">
             <div className="post__justify">
             <div className="post__center">
-            <h1 className="post__text">{this.state.user}</h1>
+            <a className="post__text" onClick={this.handleUserSearch}>{this.state.user}</a>
             <img className="post__img" src={this.state.url}></img>
             <div className="post__icon">
             {!this.state.liked ? <i onClick={this.handleLikePost} className="far fa-heart icon"></i> : <i className="fas fa-heart icon"></i>}{this.state.likes}

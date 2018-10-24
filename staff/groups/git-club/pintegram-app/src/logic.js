@@ -6,6 +6,7 @@ const { Post } = data
 const logic = {
     _userId: sessionStorage.getItem('userId') || null,
     _token: sessionStorage.getItem('token') || null,
+    _otheruserId: sessionStorage.getItem('otherUserId') || null ,
     _posts: [],
     _postsUser: [],
     _postsAllUsers: [],
@@ -13,6 +14,7 @@ const logic = {
     _likes:[],
     _followers:[],
     _postLiked:[],
+    _postsOtherUser:[],
 
     registerUser(name, surname, username, password) {
         if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
@@ -199,6 +201,18 @@ const logic = {
             })
     },
 
+    listOtherPosts(user){
+        if(!user) throw Error('Other user is empty')
+        let sortedUsers = []
+        if (user.posts) sortedUsers=user.posts.sort(function(a,b){
+            return b.id - a.id
+        })
+        return this._postsOtherUser = sortedUsers || []
+
+    },
+
+
+
     listAllPosts() {
         return fetch(`https://skylabcoders.herokuapp.com/api/users?app=pintegram`, {
             method: 'GET',
@@ -260,6 +274,21 @@ const logic = {
                 if (res.error) throw Error(res.error)
 
                 return res.data || []
+            })
+    },
+    searchUserByName(username) {
+        return fetch(`https://skylabcoders.herokuapp.com/api/users?app=pintegram`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            }
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+                let userName = res.data.filter(user => user.name === username)
+                let name = userName[0]
+                return  name || null
             })
     },
 

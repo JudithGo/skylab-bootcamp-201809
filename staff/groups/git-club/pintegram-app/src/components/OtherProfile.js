@@ -3,20 +3,33 @@ import logic from '../logic'
 import PostUser from './PostUser'
 import PostUserLiked from './PostUserLiked'
 
-class Profile extends Component {
-    state = { posts: [], user: [], postsLiked: [], grid: true, liked: false }
+class OtherProfile extends Component {
+    state = { posts:this.props.onInitialize.posts , user: [], postsLiked: [], grid: [], liked: false }
+
+    
 
     componentDidMount() {
-        // progressive loading
         debugger
-        logic.listPosts()
-            .then(posts => { this.setState({ posts }) })
+        // // progressive loading
+        // debugger
+        // const array = []
+        // let posts1 = logic.listOtherPosts(this.props.onInitialize)
+        // // this.props.onInitialize.forEach(element,index) => {
+        // array.push(posts1)
+        // console.log(array)
+        // this.setState({grid: array})
+        // // });
+        // // this.setState({grid: [posts1]})
+    
+        
+        
+        // let user = this.props.onInitialize
+        
+        // this.setState({user})    
 
-        logic.retrieveProfile()
-            .then(user => { this.setState({ user }) })
+        // logic.listLikesOtherUser(this.props.onInitialize)
+        //     .then(postsLiked => logic.retrievePosts(postsLiked).then(postsLiked => { this.setState({ postsLiked }) }))
 
-        logic.listLikes()
-        .then(postsLiked => logic.retrievePosts(postsLiked) .then(postsLiked => { this.setState({ postsLiked }) }))
 
         // one-shot loading
 
@@ -59,17 +72,19 @@ class Profile extends Component {
                 </div>
             </section>
             <div className="gallery">
-                <i onClick={this.handleGallery} className="fas fa-th icon"></i> <i className="fas fa-bookmark icon" onClick={this.handleLiked}></i>
+                <i onClick={this.handleGallery} className="fas fa-th icon"></i> 
             </div>
-            {this.state.grid && !this.state.liked && <section className="gallery">
+             <section className="gallery">
                 {this.state.posts.map(post => <PostUser key={post.id} id={post.id} url={post.url} text={post.description} onDeletePost={this.handleDeletePost} onUpdatePost={this.handleUpdatePost} />)}
-            </section>}
+            </section>
 
-            {!this.state.grid && this.state.liked && <section className="gallery">
+            {/* {!this.state.grid && this.state.liked && <section className="gallery">
                 {this.state.postsLiked.map((post, index) => <PostUserLiked key={index} id={post.id} url={post.url} text={post.description} onDeletePost={this.handleDeletePost} onUpdatePost={this.handleUpdatePost} />)}
-            </section>}
+            </section>} */}
         </div>
     }
 }
 
-export default Profile
+
+
+export default OtherProfile
