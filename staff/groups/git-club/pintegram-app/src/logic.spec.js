@@ -249,8 +249,6 @@ true && describe('posts', () => {
         })
 
 
-
-
         // describe('update', () => {
         //     describe('with existing user', () => {
         //         let username, password, text, postId
@@ -563,7 +561,7 @@ true && describe('retrieveUser', () => {
 
             it('should sucessfully retrieve name of required user', () =>
                 logic.retriveUser(logic._userId)
-                    .then(user => expect(user).to.equal('John'))
+                    .then(user => expect(user).to.equal(username))
 
             )
             it('should fail on non-string name (number)', () => {

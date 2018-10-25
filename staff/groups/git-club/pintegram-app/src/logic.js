@@ -15,7 +15,29 @@ const logic = {
     _followers: [],
     _postLiked: [],
     _comments: [],
-    _postsOtherUser:[],
+    _postsOtherUser: [],
+
+    _callApi(path, method, token, data) {
+        const init = {
+            method,
+            headers: {}
+        }
+
+        if (method !== 'GET') {
+            init.headers['Content-Type'] = 'application/json; charset=utf-8'
+        }
+
+        if (token) {
+            init.headers.Authorization = `Bearer ${token}`
+        }
+
+        if (data) {
+            init.body = JSON.stringify(data)
+        }
+
+        return fetch(`https://skylabcoders.herokuapp.com/api/${path}`, init)
+            .then(res => res.json())
+    },
 
     registerUser(name, surname, username, password) {
         if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
@@ -29,14 +51,7 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        return fetch('https://skylabcoders.herokuapp.com/api/user', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify({ app: this._app, name, surname, username, password, profilePublic: true })
-        })
-            .then(res => res.json())
+        return this._callApi('user', 'POST', undefined, { app: this._app, name, surname, username, password, profilePublic: true })
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
@@ -49,14 +64,7 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        return fetch('https://skylabcoders.herokuapp.com/api/auth', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify({ username, password })
-        })
-            .then(res => res.json())
+        return this._callApi('auth', 'POST', undefined, { username, password })
             .then(res => {
                 if (res.error) throw Error(res.error)
 
@@ -84,8 +92,8 @@ const logic = {
         this._userId = null
         this._token = null
         this._postLiked = []
-        this._comments= []
-        this._postsOtherUser=[]
+        this._comments = []
+        this._postsOtherUser = []
 
         sessionStorage.removeItem('userId')
         sessionStorage.removeItem('token')
@@ -100,28 +108,17 @@ const logic = {
 
         this._postsUser.push(new Post(this._userId, url, description))
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-                'Authorization': `Bearer ${this._token}`
-            },
-            body: JSON.stringify({ posts: this._postsUser })
-        })
-            .then(res => res.json())
+        let path = 'user/' + this._userId
+
+        return this._callApi(path, 'PUT', this._token, { posts: this._postsUser })
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
     },
 
     listLikes() {
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+        let path = 'user/' + this._userId
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
                 if (res.error) throw Error(res.error)
 
@@ -135,15 +132,8 @@ const logic = {
 
         this._likes.push(postId)
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-                'Authorization': `Bearer ${this._token}`
-            },
-            body: JSON.stringify({ likes: this._likes })
-        })
-            .then(res => res.json())
+        let path = 'user/' + this._userId
+        return this._callApi(path, 'PUT', this._token, { likes: this._likes })
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
@@ -151,15 +141,10 @@ const logic = {
 
     likedPost(postId) {
 
-        if (typeof postId !== 'number') throw TypeError(`${postId} is not a string`)
+        if (typeof postId !== 'number') throw TypeError(`${postId} is not a number`)
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+        let path = 'user/' + this._userId
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
                 if (res.error) throw Error(res.error)
                 if (res.data.likes) {
@@ -172,32 +157,22 @@ const logic = {
     },
 
     retriveUser(userId) {
+        if (typeof userId !== 'string') throw TypeError(`${userId} is not a string`)
 
-        if(typeof userId !== 'string') throw TypeError(`${userId} is not a string`)
-
-        return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+        let path = 'users?app=' + this._app
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
                 if (res.error) throw Error(res.error)
                 let userName = res.data.filter(user => user.id === userId)
-                let name = userName[0].name
+                let name = userName[0].username
                 return name || null
             })
     },
 
     listPosts() {
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+
+        let path = 'user/' + this._userId
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
                 if (res.error) throw Error(res.error)
                 let sortedUsers = []
@@ -209,12 +184,13 @@ const logic = {
     },
 
     listOtherPosts(user){
+
         if(!(user instanceof Object)) throw Error(`${user} is not an object`)
         if(user.length !== undefined) throw Error (`${user} is not an object`)
         if(!user) throw Error('Other user is empty')
- 
+
         let sortedUsers = []
-        if (user.posts) sortedUsers=user.posts.sort(function(a,b){
+        if (user.posts) sortedUsers = user.posts.sort(function (a, b) {
             return b.id - a.id
         })
         return this._postsOtherUser = sortedUsers || []
@@ -222,13 +198,9 @@ const logic = {
     },
 
     listAllPosts() {
-        return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+
+        let path = 'users?app=' + this._app
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
                 let postsUsers = []
                 if (res.error) throw Error(res.error)
@@ -245,14 +217,12 @@ const logic = {
                 return this._postsAllUser = sortedUsers || []
             })
     },
+
     retrievePosts(postsId) {
-        return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+        // if ( postsId instanceof Array) throw TypeError(`${postsId} is not an Array`)
+
+        let path = 'users?app=' + this._app
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
 
                 if (res.error) throw Error(res.error)
@@ -271,15 +241,8 @@ const logic = {
     },
 
     retrieveProfile() {
-
-        
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+        let path = 'user/' + this._userId
+        return this._callApi(path, 'GET', this._token, undefined)   
             .then(res => {
                 if (res.error) throw Error(res.error)
 
@@ -287,34 +250,46 @@ const logic = {
             })
     },
 
-    searchUserByName(username) {
+    addImageProfile(url){
+        if (typeof url !== 'string') throw TypeError(`${url} is not a string`)
 
-        if(typeof username !== 'string') throw TypeError(`${username} is not a string`)
-        
-        return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+        let path = 'user/' + this._userId
+        return this._callApi(path, 'PUT', this._token, { img: url })
+            .then(res => {
+                if (res.error) throw Error(res.error)
+            })
+    },
+
+    searchUserByName(username) {
+        if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
+
+        let path = 'users?app=' + this._app
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
                 if (res.error) throw Error(res.error)
                 let userName = res.data.filter(user => user.username === username)
                 let name = userName[0]
-                return  name || null
+                return name || null
+            })
+    },
+
+    searchUsers(text) {
+        if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
+
+        let path = 'users?app=' + this._app
+        return this._callApi(path, 'GET', this._token, undefined)
+            .then(res => {
+                if (res.error) throw Error(res.error)
+                let users = res.data.filter(user => user.username.includes(text))
+                return  users || null
             })
     },
 
     likesPost(postId) {
+        if (typeof postId !== 'number') throw TypeError(`${postId} is not a number`)
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+        let path = 'users?app=' + this._app
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
 
                 if (res.error) throw Error(res.error)
@@ -331,15 +306,25 @@ const logic = {
                 return countLikes || 0
             })
     },
+    
+    onDeleteLike(postId){
+        if (typeof postId !== 'number') throw new TypeError(`${postId} is not a number`)
+        
+        this._postLiked = this._postLiked.filter(post => post.id !== postId)
+        let _likes=[]
+        this._postLiked.forEach(post => _likes.push(post.id) )
 
-     listComments() {
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+        let path = 'user/' + this._userId
+        return this._callApi(path, 'PUT', this._token, { likes: _likes })
+            .then(res => {
+                if (res.error) throw Error(res.error)
+            })
+    },
+
+    listComments() {
+
+        let path = 'user/' + this._userId
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
                 if (res.error) throw Error(res.error)
 
@@ -348,22 +333,15 @@ const logic = {
     },
 
     addComment(postId, content) {
-        if (typeof postId !== 'number') throw TypeError(`${postId} is not a string`)
+        if (typeof postId !== 'number') throw TypeError(`${postId} is not a number`)
         if (typeof content !== 'string') throw TypeError(`${content} is not a string`)
 
         if (!content.trim()) throw Error('document is empty or blank')
 
         this._comments.push(new Comment(postId, content))
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-                'Authorization': `Bearer ${this._token}`
-            },
-            body: JSON.stringify({ comments: this._comments })
-        })
-            .then(res => res.json())
+            let path = 'user/' + this._userId
+            return this._callApi(path, 'PUT', this._token, { comments: this._comments })
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
@@ -371,13 +349,8 @@ const logic = {
     commentsPost(postId) {
         if (typeof postId !== 'number') throw TypeError(`${postId} is not a string`)
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+        let path = 'users?app=' + this._app
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
 
                 if (res.error) throw Error(res.error)
@@ -399,13 +372,8 @@ const logic = {
 
         if (typeof postId !== 'number') throw TypeError(`${postId} is not a string`)
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+        let path = 'users?app=' + this._app
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
                 if (res.error) throw Error(res.error)
                 let commentsPost = []
@@ -427,13 +395,8 @@ const logic = {
 
         if (typeof commentId !== 'number') throw TypeError(`${commentId} is not a string`)
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${this._token}`
-            }
-        })
-            .then(res => res.json())
+        let path = 'users?app=' + this._app
+        return this._callApi(path, 'GET', this._token, undefined)
             .then(res => {
                 if (res.error) throw Error(res.error)
                 let userComment = ''
@@ -453,47 +416,15 @@ const logic = {
 
     deletePost(id) {
         if (typeof id !== 'number') throw new TypeError(`${id} is not a number`)
-        
+
         this._postsUser = this._postsUser.filter(post => post.id !== id)
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-                'Authorization': `Bearer ${this._token}`
-            },
-            body: JSON.stringify({ posts: this._postsUser })
-        })
-            .then(res => res.json())
+        let path = 'user/' + this._userId
+        return this._callApi(path, 'PUT', this._token, { posts: this._postsUser })
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
-    },
-
-    //     updatePostit(id, text) {
-    //         if (typeof id !== 'number') throw new TypeError(`${id} is not a number`)
-
-    //         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
-
-    //         if (!text.trim()) throw Error('text is empty or blank')
-
-    //         const postit = this._postits.find(postit => postit.id === id)
-
-    //         postit.text = text
-
-    //         return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-    //             method: 'PUT',
-    //             headers: {
-    //                 'Content-Type': 'application/json; charset=utf-8',
-    //                 'Authorization': `Bearer ${this._token}`
-    //             },
-    //             body: JSON.stringify({ postits: this._postits })
-    //         })
-    //             .then(res => res.json())
-    //             .then(res => {
-    //                 if (res.error) throw Error(res.error)
-    //             })
-    //     }
+    }
 }
 
 // export default logic

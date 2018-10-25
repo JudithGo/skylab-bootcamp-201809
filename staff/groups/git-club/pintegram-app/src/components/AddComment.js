@@ -11,12 +11,13 @@ class AddComment extends Component {
 
     handleAdd = event => {
         event.preventDefault()
+        debugger
         this.props.onAddComment(this.state.content)
     }
 
     render() {
         return <div className="div__comments">
-            <textarea onChange = {this.handleContentChange} className="comment"/>
+            <textarea onChange = {this.handleContentChange} className="comment"  defaultValue={this.state.content} />
             <button  onClick = {this.handleAdd}>Add Comment</button>
         </div>
     }
