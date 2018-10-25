@@ -74,7 +74,7 @@ class App extends Component {
 
     handleUserSearch = (name) =>{
   
-     
+        debugger
         logic.searchUserByName(name)
             .then(user =>{
                 if (user){

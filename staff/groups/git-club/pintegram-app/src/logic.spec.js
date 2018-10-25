@@ -16,7 +16,7 @@ const { expect } = require('chai')
 
 describe('logic', () => {
     describe('users', () => {
-        false && describe('register', () => {
+    true && describe('register', () => {
             it('should succeed on correct data', () =>
                 logic.registerUser('John', 'Doe', `jd-${Math.random()}`, '123')
                     .then(() => expect(true).to.be.true)
@@ -44,7 +44,7 @@ describe('logic', () => {
             // TODO other cases
         })
 
-        false && describe('login', () => {
+    true && describe('login', () => {
             describe('with existing user', () => {
                 let username, password
 
@@ -113,7 +113,7 @@ describe('logic', () => {
         })
     })
 
-    false && describe('posts', () => {
+true && describe('posts', () => {
         describe('create', () => {
             describe('with existing user', () => {
                 let username, password, text
@@ -138,7 +138,7 @@ describe('logic', () => {
             })
         })
 
-        describe('list', () => {
+    true && describe('list posts of one user', () => {
             describe('with existing user', () => {
                 let username, password, text
 
@@ -178,7 +178,43 @@ describe('logic', () => {
             })
         })
 
-        false && describe('delete', () => {
+
+        describe('list posts of all users', () => {
+            describe('with existing user', () => {
+                let username, password, text
+
+                beforeEach(() => {
+                    const name = 'John', surname = 'Doe'
+
+                    username = `jd-${Math.random()}`
+                    password = `123-${Math.random()}`
+
+                    text = `hello ${Math.random()}`
+
+                    return logic.registerUser(name, surname, username, password)
+                        .then(() => logic.login(username, password))
+                })
+
+                describe('with existing post', () => {
+                    beforeEach(() => logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text))
+
+                    it('should return all posts', () =>
+                        logic.listAllPosts()
+                            .then(posts => {
+                                expect(posts).not.to.be.undefined
+                            })
+                    )
+                })
+
+
+                afterEach(() => logic.logout())
+            })
+        })
+
+
+
+
+    true && describe('delete', () => {
             describe('with existing user', () => {
                 let username, password, text, postId
 
@@ -264,7 +300,7 @@ describe('logic', () => {
         //     })
         // })
     })
-    false && describe('logout', () => {
+true && describe('logout', () => {
         describe('with existing user', () => {
             let username, password
 
@@ -306,7 +342,7 @@ describe('logic', () => {
     })
 
 
-    false && describe('add like', () => {
+true && describe('add like', () => {
         describe('with existing user', () => {
             let username, password, text, postId
 
@@ -375,19 +411,13 @@ describe('logic', () => {
                         .to.throw(Error, `${postId} is not a number`)
                 })
 
-
-
-
-
-
-
                 afterEach(() => logic.logout())
             })
 
         })
     })
 
-    false && describe('list likes', () => {
+true && describe('list likes', () => {
         describe('with existing user', () => {
             let username, password, text, postId
 
@@ -412,7 +442,7 @@ describe('logic', () => {
 
                 it('should successfully list likes on a liked post', () =>
 
-                     logic.addLike(postId)
+                    logic.addLike(postId)
                         .then(expect(logic._likes[logic._likes.length - 1]).to.equal(postId))
                         .then(() => logic.listLikes())
                         .then(likes => expect(likes.length).to.equal(1))
@@ -435,7 +465,7 @@ describe('logic', () => {
 
 
 
-    false && describe('liked post', () => {
+true && describe('liked post', () => {
         describe('with existing user', () => {
             let username, password, text, postId
 
@@ -514,7 +544,7 @@ describe('logic', () => {
 
     })
 
-    describe('retrieveUser', () => {
+true && describe('retrieveUser', () => {
         describe('with existing user', () => {
             let username, password, text, postId
 
@@ -531,14 +561,13 @@ describe('logic', () => {
             })
 
 
-            it('should sucessfully retrieve name of required user', () => 
+            it('should sucessfully retrieve name of required user', () =>
                 logic.retriveUser(logic._userId)
                     .then(user => expect(user).to.equal('John'))
-                    
+
             )
             it('should fail on non-string name (number)', () => {
                 const name = 6656537
-
                 expect(() => logic.retriveUser(name))
                     .to.throw(Error, `${name} is not a string`)
             })
@@ -581,7 +610,485 @@ describe('logic', () => {
 
     })
 
+true && describe('search user by name', () => {
+        describe('with existing user', () => {
+            let username, password, text, postId
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
 
 
+            it('should sucessfully search for correct user', () => {
+                debugger
+                return logic.searchUserByName(username)
+                    .then(user => {
+                        debugger
+                        expect(user.app).to.equal(logic._app)
+                        expect(user.comment).to.equal(undefined)
+                        expect(user.id).to.equal(logic._userId)
+                        expect(user.likes).to.equal(undefined)
+                        expect(user.name).to.equal('John')
+                        expect(user.posts).to.equal(undefined)
+                        expect(user.profilePublic).to.equal(true)
+                        expect(user.surname).to.equal('Doe')
+
+                    })
+
+            })
+            it('should fail on non-string name (number)', () => {
+                const username = 6656537
+                try {
+                    logic.searchUserByName(username)
+                } catch (err) {
+                    expect(err.message).to.equal(`${username} is not a string`)
+                }
+
+            })
+            it('should fail on non-string name (Array)', () => {
+                const username = []
+
+                expect(() => logic.retriveUser(username))
+                    .to.throw(Error, ` is not a string`)
+            })
+            it('should fail on non-string username (object)', () => {
+                const username = {}
+
+                expect(() => logic.retriveUser(username))
+                    .to.throw(Error, `[object Object] is not a string`)
+            })
+            it('should fail on non-string username (boolean)', () => {
+                const username = true
+
+                expect(() => logic.retriveUser(username))
+                    .to.throw(Error, `${username} is not a string`)
+            })
+            it('should fail on non-string username (undefined)', () => {
+                const username = undefined
+
+                expect(() => logic.retriveUser(username))
+                    .to.throw(Error, `${username} is not a string`)
+            })
+            it('should fail on non-string username (null)', () => {
+                const username = null
+
+                expect(() => logic.retriveUser(username))
+                    .to.throw(Error, `${username} is not a string`)
+            })
+
+            afterEach(() => logic.logout())
+
+
+        })
+
+    })
+
+true && describe('listOtherPosts() listing posts from other user', () => {
+        describe('with existing user', () => {
+            let username, password, text, user
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+                beforeEach(() =>
+                    logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text)
+                        .then(() => logic.listPosts())
+                        .then(posts => postId = posts[0].id)
+                )
+
+                describe('with user sucessfully searched', () => {
+                    beforeEach(() => {
+
+                        debugger
+                        return logic.searchUserByName(username)
+                            .then(object => user = object)
+                    })
+
+                    it('should sucessfully return posts from searched user', () => {
+                        debugger
+                        let posts = logic.listOtherPosts(user)
+                        expect(posts.length).to.equal(1)
+
+                    })
+
+                    it('should fail on non-object user (string)', () => {
+                        const user = 'holacaracola'
+
+                        expect(() => logic.listOtherPosts(user))
+                            .to.throw(Error, `${user} is not an object`)
+                    })
+                    it('should fail on non-number user (Array)', () => {
+                        const user = []
+
+                        expect(() => logic.listOtherPosts(user))
+                            .to.throw(Error, ` is not an object`)
+                    })
+
+                    it('should fail on non-number user (boolean)', () => {
+                        const user = true
+
+                        expect(() => logic.listOtherPosts(user))
+                            .to.throw(Error, `${user} is not an object`)
+                    })
+                    it('should fail on non-number user (undefined)', () => {
+                        const user = undefined
+
+                        expect(() => logic.listOtherPosts(user))
+                            .to.throw(Error, `${user} is not an object`)
+                    })
+                    it('should fail on non-number user (null)', () => {
+                        const user = null
+
+                        expect(() => logic.listOtherPosts(user))
+                            .to.throw(Error, `${user} is not an object`)
+                    })
+
+
+
+
+                    afterEach(() => logic.logout())
+                })
+
+            })
+        })
+
+    })
+
+
+true && describe('retrieveProfile()', () => {
+        describe('with existing user', () => {
+            let username, password, text, user
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+                beforeEach(() =>
+                    logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text)
+                        .then(() => logic.listPosts())
+                        .then(posts => postId = posts[0].id)
+                )
+
+                it('should sucessfully retrieve profile from logged-in user', () => {
+
+                    return logic.retrieveProfile()
+                        .then(user => {
+                            expect(user.name).to.equal('John')
+                            expect(user.surname).to.equal('Doe')
+                            expect(user.username).to.equal(username)
+                            expect(user.profilePublic).to.be.true
+                            expect(user.posts).not.to.be.undefined
+
+                        })
+
+                })
+
+
+
+
+
+                afterEach(() => logic.logout())
+
+
+            })
+        })
+
+    })
+
+true && describe('listLikes()', () => {
+        describe('with existing user', () => {
+            let username, password, text, user, postId
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+
+                beforeEach(() =>
+
+                    logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text)
+                        .then(() => logic.listPosts())
+                        .then(posts => postId = posts[0].id)
+
+                )
+
+
+
+
+                it('should successfully find liked post', () =>
+
+                    logic.addLike(postId)
+                        .then(() => logic.listLikes())
+                        .then(postsLiked => expect(postsLiked.length).to.equal(1))
+
+                    //.then(expect(logic._likes[logic._likes.length - 1]).to.equal(postId))
+                    //.then(() => logic.retrievePosts(postId))
+                    //.then(like => expect(like).not.to.be.undefined)
+
+                )
+
+
+
+
+
+                afterEach(() => logic.logout())
+
+
+            })
+        })
+
+    })
+
+true && describe('retrievePosts()', () => {
+        describe('with existing user', () => {
+            let username, password, text, user, postId
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+
+                beforeEach(() =>
+
+                    logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text)
+                        .then(() => logic.listPosts())
+                        .then(posts => postId = posts[0].id)
+
+                )
+                it('should successfully retrieve liked post', () =>
+
+                    logic.addLike(postId)
+                        .then(() => logic.listLikes())
+                        .then(postsLiked => logic.retrievePosts(postsLiked).then(postLiked => expect(postLiked.length).to.equal(1)))
+
+                )
+                afterEach(() => logic.logout())
+            })
+        })
+
+    })
+
+true && describe('add comment', () => {
+        describe('with existing user', () => {
+            let username, password, text
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+                beforeEach(() => logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text))
+                debugger
+                it('should sucessfully add a comment to created post', () => {
+
+                    return logic.listPosts()
+                        .then(posts => logic.addComment(posts[0].id, text).then(expect(logic._comments[0].content).to.equal(text))
+                            //expect(posts[0].id).not.to.be.undefined 
+
+
+                        )
+                }
+                )
+            })
+
+            afterEach(() => logic.logout())
+        })
+    })
+
+true && describe('list comments', () => {
+        describe('with existing user', () => {
+            let username, password, text
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+                beforeEach(() => logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text))
+                debugger
+                it('should sucessfully list added comment', () => {
+
+                    return logic.listPosts()
+                        .then(posts => logic.addComment(posts[0].id, text).then(() => logic.listComments()
+                            .then(comments => expect(comments).not.to.be.undefined))
+                            //expect(posts[0].id).not.to.be.undefined 
+
+
+                        )
+                }
+                )
+            })
+
+            afterEach(() => logic.logout())
+        })
+    })
+
+
+
+true && describe('commentsPost', () => {
+        describe('with existing user', () => {
+            let username, password, text
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+                beforeEach(() => logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text))
+                debugger
+                it('should sucessfully count comments on a liked post', () => {
+
+                    return logic.listPosts()
+                        .then(posts => logic.addComment(posts[0].id, text).then(() => logic.commentsPost(posts[0].id).then(likes => expect(likes).to.equal(1)))
+
+
+
+                        )
+                }
+                )
+            })
+
+            afterEach(() => logic.logout())
+        })
+    })
+
+true && describe('retrieve comments', () => {
+        describe('with existing user', () => {
+            let username, password, text
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+                beforeEach(() => logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text))
+                debugger
+                it('should sucessfully retrieve commented post', () => {
+
+                    return logic.listPosts()
+                        .then(posts => logic.addComment(posts[0].id, text).then(() => logic.retrieveComments(posts[0].id).then(comments => expect(comments.length).to.equal(1)))
+
+
+
+                        )
+                }
+                )
+            })
+
+            afterEach(() => logic.logout())
+        })
+    })
+
+    true && describe('retrieve user comment', () => {
+        describe('with existing user', () => {
+            let username, password, text
+
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                username = `jd-${Math.random()}`
+                password = `123-${Math.random()}`
+
+                text = `hello ${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => logic.login(username, password))
+            })
+
+            describe('with existing post', () => {
+                beforeEach(() => logic.createPost("https://res.cloudinary.com/skylabcoders/image/upload/v1540308747/skylabcoders/a3kz5hstqqqgkiaisi1t.jpg", text))
+                debugger
+                it('should sucessfully retrieve user comment given commentId', () => {
+
+                    return logic.listPosts()
+                        .then(posts => logic.addComment(posts[0].id, text).then(() => logic.retrieveUserComment(logic._comments[0].postId).then(comments => expect(comments).to.be.a('string')))//.then(comments => expect(comments.length).to.equal(1)))
+                        )
+
+
+                        
+                }
+                )
+            })
+
+            afterEach(() => logic.logout())
+        })
+    })
 
 })

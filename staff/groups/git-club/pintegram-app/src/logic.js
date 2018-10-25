@@ -209,7 +209,10 @@ const logic = {
     },
 
     listOtherPosts(user){
+        if(!(user instanceof Object)) throw Error(`${user} is not an object`)
+        if(user.length !== undefined) throw Error (`${user} is not an object`)
         if(!user) throw Error('Other user is empty')
+ 
         let sortedUsers = []
         if (user.posts) sortedUsers=user.posts.sort(function(a,b){
             return b.id - a.id
@@ -285,6 +288,9 @@ const logic = {
     },
 
     searchUserByName(username) {
+
+        if(typeof username !== 'string') throw TypeError(`${username} is not a string`)
+        
         return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
             method: 'GET',
             headers: {
@@ -294,7 +300,7 @@ const logic = {
             .then(res => res.json())
             .then(res => {
                 if (res.error) throw Error(res.error)
-                let userName = res.data.filter(user => user.name === username)
+                let userName = res.data.filter(user => user.username === username)
                 let name = userName[0]
                 return  name || null
             })
@@ -326,7 +332,7 @@ const logic = {
             })
     },
 
-    listComments() {
+     listComments() {
         return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
             method: 'GET',
             headers: {
@@ -363,6 +369,7 @@ const logic = {
             })
     },
     commentsPost(postId) {
+        if (typeof postId !== 'number') throw TypeError(`${postId} is not a string`)
 
         return fetch(`https://skylabcoders.herokuapp.com/api/users?app=${this._app}`, {
             method: 'GET',
