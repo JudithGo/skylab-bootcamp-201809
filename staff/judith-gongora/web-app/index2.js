@@ -6,12 +6,10 @@ const app = express()
 
 const users = []
 
-let loggedIn = null
+let loggedIn = []
 
-let error = null
 
 app.get('/', (req, res) => {
-    if(!loggedIn) {
     res.send(`<!DOCTYPE html>
 <html>
     <head>
@@ -22,34 +20,9 @@ app.get('/', (req, res) => {
         <a href="/login">Login</a> or <a href="/register">Register</a>
     </body>
 </html>`)
-} else { res.redirect('/home')
-}
-})
-
-app.get('/login', (req, res) => {
-    if(!loggedIn) {
-    res.send(`<!DOCTYPE html>
-<html>
-    <head>
-        <title>Hello World!</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <form action="/home" method="POST">
-            <input type="text" name="username" placeholder="username">
-            <input type="password" name="password" placeholder="password">
-            <button type="submit">Login</button>
-        </form>
-        <a href="/">go back</a>
-
-    </body>
-</html>`)
-    } else { res.redirect('/home')
-    }
 })
 
 app.get('/register', (req, res) => {
-    if(!loggedIn) {
     res.send(`<!DOCTYPE html>
 <html>
     <head>
@@ -67,13 +40,9 @@ app.get('/register', (req, res) => {
         <a href="/">go back</a>
     </body>
 </html>`)
-} else { res.redirect('/home')
-}
 })
 
 app.post('/register', (req, res) => {
-    if(!loggedIn) {
-
     let data = ''
 
     req.on('data', chunk => data += chunk)
@@ -103,57 +72,10 @@ app.post('/register', (req, res) => {
     </body>
 </html>`)
     })
-} else { res.redirect('/home')
-}
 })
 
-app.all('/home', (req, res) => {
-    
-    let data = ''
-
-    req.on('data', chunk => data += chunk)
-
-    req.on('end', () => {
-        const keyValues = data.split('&')
-
-        const logged = {}
-     
-        keyValues.forEach(keyValue => {
-            const [key, value] = keyValue.split('=')
-
-            logged[key] = value
-            console.log(logged)
-        })
-
-        const login = users.filter(user => {
-            return user.username === logged.username && user.password === logged.password
-        })
-
-        
-        if (login.length !== 0) {
-            loggedIn = login 
-            res.send(`<!DOCTYPE html>
- <html>
-    <head>
-        <title>Hello World!</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <p>Welcome ${loggedIn[0].name}. </p>
-        <a href="/logout">logout</a>
-    </body>
- </html>`)
-        }else { 
-            // error= 'error credentials'
-            res.redirect('/login')
-    }
-     
-    })
-
-})
-
-    app.get('/users', (req, res) => {
-        res.send(`<!DOCTYPE html>
+app.get('/users', (req, res) => {
+    res.send(`<!DOCTYPE html>
 <html>
     <head>
         <title>Hello World!</title>
@@ -167,14 +89,93 @@ app.all('/home', (req, res) => {
     </body>
 </html>`)
 
-    })
+})
 
-    app.get('/logout', (req, res) => {
-        loggedIn = null
-        console.log(loggedIn)
-        res.redirect('/')
+app.get('/login', (req, res) => {
+    if(loggedIn.length===0){
+    res.send(`<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello World!</title>
+    </head>
+    <body>
+        <h1>Hello World!</h1>
+        <form action="/login" method="POST">
+            <input type="text" name="username" placeholder="username">
+            <input type="password" name="password" placeholder="password">
+            <button type="submit">Login</button>
+        </form>
+        <a href="/">go back</a>
+    </body>
+</html>`)
+    }else{
+        res.redirect('/home')
+    }
+})
+
+app.post('/login', (req, res) => {
+    let data = ''
+
+    req.on('data', chunk => data += chunk)
+
+    req.on('end', () => {
+        const keyValues = data.split('&')
+
+        const logged = { }
+
+        keyValues.forEach(keyValue => {
+            const [key, value] = keyValue.split('=')
+
+            logged[key] = value
+        })
+
+        const login = users.filter(user => {
+            user.username === logged.username && user.password === logged.password
+        })
         
-    
-    })
+        if (login.length !== 0){
+            loggedIn.push(logged) 
+            res.redirect('/home')
+        }else{ 
 
-    app.listen(port || 3000)
+            res.send(`<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello World!</title>
+    </head>
+    <body>
+        <h1>Hello World!</h1>
+        <p>Welcome ${loggedIn[0].name}. </p>
+        <a href="/login">logout</a>
+    </body>
+</html>`)
+        }
+        }
+    })
+               
+})
+
+app.post('/home', (req, res) => {
+
+     res.send(`<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello World!</title>
+    </head>
+    <body>
+        <h1>Hello World!</h1>
+        <p>Welcome ${loggedIn[0].name}. </p>
+        <a href="/logout">logout</a>
+    </body>
+</html>`) 
+
+})
+
+app.get('/logout', (req, res) => {
+    loggedIn = []
+    res.redirect('/')
+    
+
+})
+
+app.listen(port || 3000)
