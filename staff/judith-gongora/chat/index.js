@@ -4,13 +4,19 @@ const [,,port] = process.argv
 
 var sockets=[];
 
-const server = net.createServer(socket => {
+net.createServer(socket => {
 
     sockets.push(socket)
     
-    socket.on('data', data => process.stdout.write(data))
+    socket.on('data', data => {
+        process.stdout.write(data)
+        write(socket)
+    })
 
-    process.stdin.on('data', data => socket.write(data))
-})
-
-server.listen(port)
+    function write(socket){
+        sockets.forEach(client => {
+            if (client==!socket) process.stdin.on('data', data => socket.write(data))
+        })
+    }
+    
+}).listen(port)
