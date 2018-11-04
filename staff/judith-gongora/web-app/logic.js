@@ -12,13 +12,14 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        let user = User.findByUsername(username)
+        return User.findByUsername(username)
+            .then(user => {
+                if (user) throw Error(`username ${username} already registered`)
 
-        if (user) throw Error(`username ${username} already registered`)
+                user = new User({ name, surname, username, password })
 
-        user = new User(name, surname, username, password)
-
-        user.save()
+                return user.save()
+            })
     },
 
     authenticateUser(username, password) {
@@ -28,32 +29,30 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        const user = User.findByUsername(username)
+        return User.findByUsername(username)
+            .then(user => {
+                if (!user || user.password !== password) throw Error('invalid username or password')
 
-        if (!user || user.password !== password) throw Error('invalid username or password')
-
-        return user.id
+                return user.id
+            })
     },
 
     retrieveUser(id) {
         if (typeof id !== 'number') throw TypeError(`${id} is not a number`)
 
-        const user = User.findById(id)
+        return User.findById(id)
+            .then(user => {
 
-        if (!user) throw Error(`user with id ${id} not found`)
+                if (!user) throw Error(`user with id ${id} not found`)
 
-        const _user = new User(
-            user.name,
-            user.surname,
-            user.username
-        )
+                const _user = user.toObject()
 
-        _user.id = user.id
-        _user.postits = user.postits
+                _user.id = id
 
-        delete _user.password
+                delete _user.password
 
-        return _user
+                return _user
+            })
     },
 
     createPostit(id, content) {
@@ -63,52 +62,55 @@ const logic = {
 
         if (!content.trim()) throw Error('content is empty or blank')
 
-        const user = User.findById(id)
+        return User.findById(id)
+            .then(user => {
+                if (!user) throw Error(`user with id ${id} not found`)
+                
+                const postit = new Postit (content)
+               
+                user.postits.push(postit)
 
-        if (!user) throw Error(`user with id ${id} not found`)
-
-        const postit = new Postit (content)
-
-        const _user = new User(
-            user.name,
-            user.surname,
-            user.username,
-            user. password
-        )
-        user.postits.push(postit)
-
-        user.postits.forEach(postit => {
-            _user.postits.push(postit)
-            
-        })
-
-        _user.id = user.id
-
-        _user.save()
+                user.save()
+            })
     },
 
 
     deletePostit(idPostit, idUser) {
-        if (typeof idPostit !== 'number') throw TypeError(`${idPostit} is not a number`)
 
-        const user = User.findById(idUser)
+        const postitId = Number(idPostit)
+        if (typeof postitId !== 'number') throw TypeError(`${postitId} is not a number`)
 
-        if (!user) throw Error(`user with id ${idUser} not found`)
+        return User.findById(idUser)
+        .then(user => {
 
-        const _user = new User(
-            user.name,
-            user.surname,
-            user.username,
-            user. password
-        )
-        _user.postits = user.postits.filter(postit => postit.id === idPostit)
-            console.log( _user.postits)
-        _user.id = user.id
+            if (!user) throw Error(`user with id ${id} not found`)
+           
+            user.postits = user.postits.filter(postit => postit.id !== postitId)
+            user.save()
+        })
+        
+    },
 
-        _user.save()
+    updatePostit(idPostit, idUser, content) {
+
+        const postitId = Number(idPostit)
+        if (typeof postitId !== 'number') throw TypeError(`${postitId} is not a number`)
+        if (typeof content !== 'string') throw TypeError(`${content} is not a string`)
+
+        if (!content.trim()) throw Error('content is empty or blank')
+
+        return User.findById(idUser)
+        .then(user => {
+
+            if (!user) throw Error(`user with id ${id} not found`)
+           
+            const postit = user.postits.find(postit => postit.id === postitId)
+
+            postit.content = content
+            user.save()
+        })
+        
     }
 }
-
-
 
 module.exports = logic

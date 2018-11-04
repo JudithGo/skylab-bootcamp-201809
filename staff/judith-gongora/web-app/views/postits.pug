@@ -1,0 +1,18 @@
+extends layout
+block content
+    p Welcome #{name}!
+    a(href='/logout') logout
+    a(href='/home') home
+    form(method='POST' action='/postits')
+        input(type='text' name='content' placeholder='write your postit here...')
+        button(type='submit') ADD           
+    .container-postits
+        if postits
+            each postit in postits
+                section(class='postit') 
+                    form(method='POST' action='/postit-delete/' + postit.id) 
+                        button(type='submit') X 
+                    form(method='POST' action='/postit-update/' + postit.id)
+                        button(type='submit') save 
+                        textarea(class='textarea' id='contentmod' name='contentmod')=postit.content 
+                        

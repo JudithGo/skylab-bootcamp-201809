@@ -20,4 +20,11 @@
   height: 215px;
 }
 
+.textarea {
+  height: 120px;
+  background: transparent;
+  border: none;
+  resize: none;
+}
+
 /*# sourceMappingURL=main.css.map */
