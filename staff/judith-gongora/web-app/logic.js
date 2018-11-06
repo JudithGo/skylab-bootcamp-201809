@@ -70,31 +70,35 @@ const logic = {
                
                 user.postits.push(postit)
 
-                user.save()
+                return user.save()
             })
     },
 
-
+    /**
+     * 
+     * @param {number} idPostit 
+     * @param {number} idUser 
+     */
     deletePostit(idPostit, idUser) {
 
-        const postitId = Number(idPostit)
-        if (typeof postitId !== 'number') throw TypeError(`${postitId} is not a number`)
+        if (typeof idPostit !== 'number') throw TypeError(`${idPostit} is not a number`)
+        if (typeof idUser !== 'number') throw TypeError(`${idUser} is not a number`)
 
         return User.findById(idUser)
         .then(user => {
 
             if (!user) throw Error(`user with id ${id} not found`)
            
-            user.postits = user.postits.filter(postit => postit.id !== postitId)
-            user.save()
+            user.postits = user.postits.filter(postit => postit.id !== idPostit)
+            return user.save()
         })
         
     },
 
     updatePostit(idPostit, idUser, content) {
 
-        const postitId = Number(idPostit)
-        if (typeof postitId !== 'number') throw TypeError(`${postitId} is not a number`)
+        if (typeof idPostit !== 'number') throw TypeError(`${idPostit} is not a number`)
+        if (typeof idUser !== 'number') throw TypeError(`${idUser} is not a number`)
         if (typeof content !== 'string') throw TypeError(`${content} is not a string`)
 
         if (!content.trim()) throw Error('content is empty or blank')
@@ -104,10 +108,10 @@ const logic = {
 
             if (!user) throw Error(`user with id ${id} not found`)
            
-            const postit = user.postits.find(postit => postit.id === postitId)
+            const postit = user.postits.find(postit => postit.id === idPostit)
 
             postit.content = content
-            user.save()
+            return user.save()
         })
         
     }

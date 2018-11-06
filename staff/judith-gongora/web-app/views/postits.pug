@@ -7,7 +7,7 @@ block content
         input(type='text' name='content' placeholder='write your postit here...')
         button(type='submit') ADD           
     .container-postits
-        if postits
+        if postits.length
             each postit in postits
                 section(class='postit') 
                     form(method='POST' action='/postit-delete/' + postit.id) 

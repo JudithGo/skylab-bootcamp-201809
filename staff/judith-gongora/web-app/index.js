@@ -11,21 +11,21 @@ const { argv: [, , port = process.env.PORT || 8080] } = process
 const app = express()
 
 app.use(express.static('./public'))
-app.set('view engine', 'pug')
+app.set('view engine', 'pug') //Configura el metodo de render en view engine con el lenguaje pug
 
-const formBodyParser = bodyParser.urlencoded({ extended: false })
+const formBodyParser = bodyParser.urlencoded({ extended: false }) //Variable que codifica en utf8 en parse del body. extended es como te devuelve en false queryString
 
 const mySession = session({
-    secret: 'my super secret',
-    cookie: { maxAge: 60 * 60 * 24 },
-    resave: true,
-    saveUninitialized: true,
-    store: new FileStore({
+    secret: 'my super secret', //Secreto que firma la session
+    cookie: { maxAge: 60 * 60 * 24 }, //Caduca al minuto
+    resave: true, // guarda de nuevo cuando se guarda en la session store
+    saveUninitialized: true, //Guarda al inicializar
+    store: new FileStore({ //Donde guardar los sessions
         path: './.sessions'
     })
 })
 
-app.use(mySession)
+app.use(mySession) //De esta manera permitimos el uso de mySession en cualquier llamada app.
 
 app.get('/', (req, res) => {
     req.session.error = null
@@ -107,7 +107,7 @@ app.get('/home', (req, res) => {
     } else res.redirect('/')
 })
 
-app.get('/postits', mySession, (req, res) => {
+app.get('/postits', (req, res) => {
     const id = req.session.userId
 
     if (id) {
@@ -130,7 +130,7 @@ app.get('/postits', mySession, (req, res) => {
  
 })
 
-app.post('/postits', [formBodyParser, mySession], (req, res) => {
+app.post('/postits', formBodyParser, (req, res) => {
     const { content } = req.body
     const id = req.session.userId
 
@@ -149,13 +149,13 @@ app.post('/postits', [formBodyParser, mySession], (req, res) => {
     }
 })
 
-app.post('/postit-delete/:id',  mySession, (req, res) => {
+app.post('/postit-delete/:id', (req, res) => {
     const idPostit  = req.params.id
     const id = req.session.userId
     
     try {
 
-        logic.deletePostit(idPostit, id)
+        logic.deletePostit(Number(idPostit), id)
 
         error = null
 
@@ -168,15 +168,14 @@ app.post('/postit-delete/:id',  mySession, (req, res) => {
     }
 })
 
-app.post('/postit-update/:id',  mySession, (req, res) => {
+app.post('/postit-update/:id', formBodyParser, (req, res) => {
     const idPostit  = req.params.id
     const id = req.session.userId
     const { contentmod } = req.body
-    console.log(contentmod)
     
     try {
 
-        logic.updatePostit(idPostit, id, contentmod)
+        logic.updatePostit(Number(idPostit), id, contentmod)
 
         error = null
 
