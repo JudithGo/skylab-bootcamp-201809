@@ -1,130 +1,149 @@
-import data from './data'
+// import data from './data'
 // const data = require('./data')
 
-const { Post } = data
+// const {Postit} = data
 
 const logic = {
-    _userId: sessionStorage.getItem('userId') || null,
-    _token: sessionStorage.getItem('token') || null,
-    _posts: [],
-    _follows:[],
-    _followers:[],
+    _postits : [],
+    _callApi(path, method, token, data) {
+        const init = {
+            method,
+            headers: {}
+        }
 
-    registerUser(name, surname, username, password) {
+        if (method !== 'GET') {
+            init.headers['Content-Type'] = 'application/json; charset=utf-8'
+        }
+
+        if (token) {
+            init.headers.Authorization = `Bearer ${token}`
+        }
+
+        if (data) {
+            init.body = JSON.stringify(data)
+        }
+
+        return fetch(`http://localhost:5000/api/${path}`, init)
+            .then(res => res.json())
+    },
+
+    createUser(name, surname, email, username, password) {
+        
         if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
         if (typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
+        if (typeof email !== 'string') throw TypeError(`${email} is not a string`)
         if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
         if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
 
         if (!name.trim()) throw Error('name is empty or blank')
         if (!surname.trim()) throw Error('surname is empty or blank')
+        if (!email.trim()) throw Error('email is empty or blank')
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
-
-        return fetch('https://skylabcoders.herokuapp.com/api/user', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify({ app:'pintegram', name, surname, username, password })
+ 
+        return this._callApi('users', 'POST', undefined, { name, surname, username, password })
+        .then(res => {
+            if (res.error) throw Error(res.error)
         })
-            .then(res => res.json())
-            .then(res => {
-                if (res.error) throw Error(res.error)
-            })
+        .catch(({message}) => console.log('error', message))
     },
 
-    login(username, password) {
+    loginUser(username, password) {
         if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
         if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
 
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        return fetch('https://skylabcoders.herokuapp.com/api/auth', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify({ username, password })
-        })
-            .then(res => res.json())
+        return this._callApi('auth', 'POST', undefined, {username, password})
             .then(res => {
+                
                 if (res.error) throw Error(res.error)
 
-                const { id, token } = res.data
-
-                this._userId = id
-                this._token = token
-
-                sessionStorage.setItem('userId', id)
-                sessionStorage.setItem('token', token)
+                return res.data
             })
+        
     },
 
-    get loggedIn() {
-        return !!this._userId
-    },
+    retrieveUser(userId, token) {
+        
+        if (typeof userId !== 'string') throw new TypeError(`${userId} is not a string`)
 
-    logout() {
-        this._posts = []
-        this._userId = null
-        this._token = null
+        if (!userId.trim()) throw Error('userId is empty or blank')
 
-        sessionStorage.removeItem('userId')
-        sessionStorage.removeItem('token')
-    },
+        if (typeof token !== 'string') throw TypeError(`${token} is not a string`)
 
-    createPost(url, description) {
-        if (typeof url !== 'string') throw TypeError(`${url} is not a string`)
-        if (typeof description !== 'string') throw TypeError(`${description} is not a string`)
+        if (!token.trim()) throw Error('token is empty or blank')
 
-        if (!url.trim()) throw Error('document is empty or blank')
-        if (!description.trim()) throw Error('Description is empty or blank')
-
-        this._posts.push(new Post(this._userId, url, description))
-
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-                'Authorization': `Bearer ${this._token}`
-            },
-            body: JSON.stringify({ posts: this._posts })
-        })
-            .then(res => res.json())
-            .then(res => {
-                if (res.error) throw Error(res.error)
-            })
-    },
-
-    listPosts() {
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
+        return fetch(`http://localhost:5000/api/users/${userId}/`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${this._token}`
+                'Authorization': `Bearer ${token}`
             }
         })
             .then(res => res.json())
             .then(res => {
                 if (res.error) throw Error(res.error)
 
-                return this._posts = res.data.posts || []
+                return  res.data 
             })
     },
 
-    deletePost(id) {
-        if (typeof id !== 'number') throw new TypeError(`${id} is not a number`)
+    updateUser(userId, token, name, surname, npassword, rnpassword, password) {
+        
+        if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
+        if (typeof surname !== 'string') throw TypeError(`${surname} is not a string`)
+        if (typeof userId !== 'string') throw TypeError(`${userId} is not a string`)
+        if (typeof token !== 'string') throw TypeError(`${token} is not a string`)
+       
+        if (typeof npassword !== 'string') throw TypeError(`${npassword} is not a string`)
+        if (typeof rnpassword !== 'string') throw TypeError(`${rnpassword} is not a string`)
+        if (typeof password !== 'string') throw TypeError(`${password} is not a string`)
 
-        this._posts = this._posts.filter(post => post.id !== id)
+        if (!name.trim()) throw Error('name is empty or blank')
+        if (!surname.trim()) throw Error('surname is empty or blank')
+        if (!userId.trim()) throw Error('user id is empty or blank')
+        if (!token.trim()) throw Error('token is empty or blank')
+    
+        if (!password.trim()) throw Error('password is empty or blank')
+        
+        let body
+        if (!npassword.trim() && !rnpassword.trim()) body = { name, surname, npassword, password }
+        if (npassword.trim() && !rnpassword.trim()) throw Error('repeat new password is empty or blank')
+        if (!npassword.trim() && rnpassword.trim()) throw Error('new password is empty or blank')
+        if (npassword.trim() && rnpassword.trim() && npassword !== rnpassword) throw Error('the password are different')
+        if (npassword.trim() && rnpassword.trim() && npassword === rnpassword) body = {name, surname, npassword, password}
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'PUT',
+ 
+        return this._callApi(`/users/${userId}/profile`, 'PUT', token, body)
+        .then(res => {
+            if (res.error) throw Error(res.error)
+        })
+        .catch(({message}) => console.log('error', message))
+    },
+
+    //POSTITS
+    createPostit(text, userId, token) {
+        
+        if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
+
+        if (!text.trim()) throw Error('text is empty or blank')
+
+        if (typeof userId !== 'string') throw new TypeError(`${userId} is not a string`)
+
+        if (!userId.trim()) throw Error('userId is empty or blank')
+
+        if (typeof token !== 'string') throw TypeError(`${token} is not a string`)
+
+        if (!token.trim()) throw Error('token is empty or blank')
+
+        return fetch(`http://localhost:5000/api/users/${userId}/postits`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization': `Bearer ${this._token}`
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ posts: this._posts})
+            body: JSON.stringify({ text })
         })
             .then(res => res.json())
             .then(res => {
@@ -132,31 +151,90 @@ const logic = {
             })
     },
 
-    updatePostit(id, text) {
-        if (typeof id !== 'number') throw new TypeError(`${id} is not a number`)
+    listPostits(userId, token) {
+        if (typeof userId !== 'string') throw new TypeError(`${userId} is not a string`)
+
+        if (!userId.trim()) throw Error('userId is empty or blank')
+
+        if (typeof token !== 'string') throw TypeError(`${token} is not a string`)
+
+        if (!token.trim()) throw Error('token is empty or blank')
+
+        return fetch(`http://localhost:5000/api/users/${userId}/postits`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+
+                return this._postits = res.data || []
+            })
+    },
+
+    deletePostit(id, userId, token) {
+  
+        if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
+
+        if (typeof userId !== 'string') throw new TypeError(`${userId} is not a string`)
+
+        if (!userId.trim()) throw Error('userId is empty or blank')
+
+        if (typeof token !== 'string') throw TypeError(`${token} is not a string`)
+
+        if (!token.trim()) throw Error('token is empty or blank')
+
+        this._postits = this._postits.filter(postit => postit.id !== id)
+
+        return fetch(`http://localhost:5000/api/users/${userId}/postits/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+            })
+    },
+
+    editPost(id) {
+        document.getElementById(id).disabled = false;
+    },
+
+    UpdatePostit(userId, token, id, index, text) {
 
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
 
         if (!text.trim()) throw Error('text is empty or blank')
 
-        const postit = this._postits.find(postit => postit.id === id)
+        if (typeof userId !== 'string') throw new TypeError(`${userId} is not a string`)
 
-        postit.text = text
+        if (!userId.trim()) throw Error('userId is empty or blank')
 
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
+        if (typeof token !== 'string') throw TypeError(`${token} is not a string`)
+
+        if (!token.trim()) throw Error('token is empty or blank')
+
+        this._postits.splice(index, 1, {text : text ,id : id})
+
+        return fetch(`http://localhost:5000/api/users/${userId}/postits/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization': `Bearer ${this._token}`
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ postits: this._postits })
+            body: JSON.stringify({ text })
         })
             .then(res => res.json())
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
     }
-}
 
-export default logic
-// module.exports = logic
+
+}
+module.exports = logic
+// export default logic

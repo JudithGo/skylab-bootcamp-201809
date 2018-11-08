@@ -15,7 +15,7 @@ describe('logic', () => {
 
     beforeEach(() => fs.writeFileSync(User._file, JSON.stringify([])))
 
-    // afterEach(() => fs.writeFileSync(User._file, JSON.stringify([])))
+    afterEach(() => fs.writeFileSync(User._file, JSON.stringify([])))
 
     describe('user', () => {
         !false && describe('register', () => {
@@ -81,6 +81,45 @@ describe('logic', () => {
 
             it('should fail on undefined username', () => {
                 expect(() => logic.authenticateUser(undefined, user.password)).to.throw(TypeError, 'undefined is not a string')
+            })
+
+            // TODO other test cases
+        })
+
+        !false && describe('update user', () => {
+            let user
+            let npassword
+            beforeEach(() => {
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+
+                fs.writeFileSync(User._file, JSON.stringify([user]))
+            })
+
+            it('should update user on correct credentials', () => {
+                const { id, surname, password } = user
+                npassword = ' '
+                const newname = 'new name'
+                return logic.updateUser(id, newname, surname, npassword, password)
+                    .then(()=> {
+                        expect(true).to.be.true
+                        
+
+                        const json = fs.readFileSync(User._file)
+
+                        const users = JSON.parse(json)
+
+                        const [_user] = users
+
+                        expect(_user.id).to.equal(id)
+                        expect(_user.name).to.equal(newname)
+                    })
+            })
+
+            it('should fail on wrong password', () => {
+                let { id, name, surname, password } = user
+                npassword = ' '
+                password = 'other'
+                expect(() => logic.updateUser(id, name, surname, npassword, password)).to.throw('invalid password')
             })
 
             // TODO other test cases
