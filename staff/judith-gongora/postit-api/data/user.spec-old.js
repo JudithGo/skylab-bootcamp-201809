@@ -34,7 +34,7 @@ describe('User (model)', () => {
             return users.deleteMany()
         })
 
-        it('should succeed on correct data', () =>
+        it('should succeed on correct data', () =>{
             new User({ name, surname, username, password }).save()
                 .then(() => users.find().toArray())
                 .then(_users => {
@@ -47,9 +47,9 @@ describe('User (model)', () => {
                     expect(user.username).to.equal(username)
                     expect(user.password).to.equal(password)
                 })
-        )
+        })
 
-        describe('when user already exists', () => {
+        !false && describe('when user already exists', () => {
             let name, surname, username, password, id
 
             beforeEach(() => {
@@ -57,54 +57,69 @@ describe('User (model)', () => {
                 surname = `surname-${Math.random()}`
                 username = `username-${Math.random()}`
                 password = `password-${Math.random()}`
-
-                const user = new User({ name, surname, username, password })
-
-                id = user.id
-
-                return users.insertOne(user)
+                return users.deleteMany()
             })
 
             it('should succeed on correct username', () => {
-                const newName = `${name}-${Math.random()}`
+                const user = new User({ name, surname, username, password })
+                id = user.id
 
-                const _user = new User({ name: newName, surname, username, password })
+                user.save()
+                .then(() => users.find().toArray())
+                .then(_users => {
+                    expect(_users.length).to.equal(1)
 
-                _user.id = id
+                    let [user] = _users
 
-                return _user.save()
-                    .then(() => users.find().toArray())
-                    .then(_users => {
-                        expect(_users.length).to.equal(1)
+                    expect(user).to.exist
 
-                        const [user] = _users
+                    expect(user.name).to.equal(name)
+                    expect(user.surname).to.equal(surname)
+                    expect(user.username).to.equal(username)
+                    expect(user.password).to.equal(password)
 
-                        expect(user).to.exist
+                    const newName = `${name}-${Math.random()}`
 
-                        expect(user.name).to.equal(newName)
-                        expect(user.surname).to.equal(surname)
-                        expect(user.username).to.equal(username)
-                        expect(user.password).to.equal(password)
-                    })
+                    const _user = new User({ name: newName, surname, username, password })
+
+                    _user.id = id
+
+                     return _user.save()
+                        .then(() => users.find().toArray())
+                        .then(_users => {
+                            expect(_users.length).to.equal(1)
+     
+                            let [user] = _users
+     
+                            expect(user).to.exist
+     
+                            expect(user.name).to.equal(newName)
+                            expect(user.surname).to.equal(surname)
+                            expect(user.username).to.equal(username)
+                            expect(user.password).to.equal(password)
+                     })
+                })
             })
         })
     })
-        describe('findByUsername', () => {
+
+    !false && describe('findByUsername', () => {
         let name, surname, username, password
 
         beforeEach(() => {
             name = `name-${Math.random()}`
             surname = `surname-${Math.random()}`
             username = `username-${Math.random()}`
-            password = `password-${Math.random()}`
-
-            const user = new User({ name, surname, username, password })
-
-            return users.insertOne(user)
+            password = `password-${Math.random()}`       
         })
 
-        it('should succeed on correct username', () => 
-            User.findByUsername(username)
+        it('should succeed on correct username', () =>{
+            const user = new User({name, surname, username, password})
+            user.save()
+            .then(() => users.find().toArray())
+            .then(users => {
+                // debugger
+                User.findByUsername(users[0].username)
                 .then(user => {
                     expect(user).to.exist
                     expect(user).to.be.instanceOf(User)
@@ -114,39 +129,7 @@ describe('User (model)', () => {
                     expect(user.username).to.equal(username)
                     expect(user.password).to.equal(password)
                 })
-        )
+            })
         })
-
-        describe('findById', () => {
-            let id, name, surname, username, password
-    
-            beforeEach(() => {
-                name = `name-${Math.random()}`
-                surname = `surname-${Math.random()}`
-                username = `username-${Math.random()}`
-                password = `password-${Math.random()}`
-    
-                const user = new User({ name, surname, username, password })
-
-                id = user.id
-    
-                return users.insertOne(user)
-            })
-    
-            it('should succeed on correct id', () => 
-                User.findById(id)
-                    .then(user => {
-                        expect(user).to.exist
-                        expect(user).to.be.instanceOf(User)
-
-
-                        expect(user.id).to.equal(id)
-                        expect(user.name).to.equal(name)
-                        expect(user.surname).to.equal(surname)
-                        expect(user.username).to.equal(username)
-                        expect(user.password).to.equal(password)
-                    })
-            )
-            })
-
+    })
 })
