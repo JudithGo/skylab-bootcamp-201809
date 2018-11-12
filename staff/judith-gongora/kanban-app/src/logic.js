@@ -70,7 +70,7 @@ const logic = {
     },
 
     addPostit(text, status) {
-        console.log(status)
+       
         if (typeof text !== 'string') throw TypeError(`${text} text is not a string`)
 
         if (!text.trim()) throw Error('text is empty or blank')

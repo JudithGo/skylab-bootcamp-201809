@@ -55,6 +55,7 @@ class Postits extends Component {
 
     handleSubmit = (text, status) => {
         try {
+           
             logic.addPostit(text, status)
                 .then(() => logic.listPostits())
                 .then(postits => this.setState({ postits }))
@@ -167,28 +168,28 @@ class Postits extends Component {
                         To Do
                     </header>
                     <InputForm onSubmit={this.handleSubmit}  status = 'todo' />
-                        {this.state.todo.map(postit => <Post key={postit._id} text={postit.text} id={postit._id} onUpdatePost={this.handleModifyPostit} status = 'todo' draggable='true' onDragStart={ event => this.onDragStart(event, postit._id, postit.text) }/>)}
+                        {this.state.todo.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onUpdatePost={this.handleModifyPostit} status = 'todo' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
                     </section>
                     <section className="list dropzone" onDragOver={this.onDragOver} onDrop={ event => this.onDrop(event, 'doing')}>
                     <header>
                         Doing
                     </header>
                     <InputForm onSubmit={this.handleSubmit} status= 'doing'/>
-                        {this.state.doing.map(postit => <Post key={postit._id} text={postit.text} id={postit._id} onUpdatePost={this.handleModifyPostit} status = 'doing' draggable='true' onDragStart={ event => this.onDragStart(event, postit._id, postit.text) }/>)}
+                        {this.state.doing.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onUpdatePost={this.handleModifyPostit} status = 'doing' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
                     </section>
                     <section className="list dropzone" onDragOver={this.onDragOver} onDrop={ event => this.onDrop(event, 'review')}>
                         <header>
                             Review
                         </header>
                         <InputForm onSubmit={this.handleSubmit} status='review'/>
-                        {this.state.review.map(postit => <Post key={postit._id} text={postit.text} id={postit._id}  onUpdatePost={this.handleModifyPostit} status = 'review' draggable='true' onDragStart={ event => this.onDragStart(event, postit._id,postit.text) }/>)}
+                        {this.state.review.map(postit => <Post key={postit.id} text={postit.text} id={postit.id}  onUpdatePost={this.handleModifyPostit} status = 'review' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id,postit.text) }/>)}
                     </section>
                     <section className="list dropzone" onDragOver={this.onDragOver} onDrop={ event => this.onDrop(event, 'done')}>
                     <header>
                         Done
                     </header>
                     <InputForm onSubmit={this.handleSubmit} status='done'/>
-                        {this.state.done.map(postit => <Post key={postit._id} text={postit.text} id={postit._id} onUpdatePost={this.handleModifyPostit} status = 'done' draggable='true' onDragStart={ event => this.onDragStart(event, postit._id, postit.text) }/>)}
+                        {this.state.done.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onUpdatePost={this.handleModifyPostit} status = 'done' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
                     </section>           
                      
             </div>
