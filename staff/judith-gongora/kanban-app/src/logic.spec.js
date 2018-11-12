@@ -195,7 +195,7 @@ describe('logic', () => {
                     beforeEach(() =>
                         logic.addPostit(text, status)
                             .then(() => logic.listPostits())
-                            .then(postits => postitId = postits[0].id)
+                            .then(postits => postitId = postits[0]._id)
                     )
 
                     it('should succeed', () =>
@@ -231,11 +231,11 @@ describe('logic', () => {
 
                         return logic.addPostit(text, status)
                             .then(() => logic.listPostits())
-                            .then(([postit]) => postitId = postit.id)
+                            .then(([postit]) => postitId = postit._id)
                     })
 
                     it('should succeed', () =>
-                        logic.modifyPostit(postitId, newText)
+                        logic.modifyPostit(postitId, newText, status)
                             .then(() => {
                                 expect(true).to.be.true
 
@@ -247,7 +247,7 @@ describe('logic', () => {
 
                                 const [postit] = postits
 
-                                expect(postit.id).to.equal(postitId)
+                                expect(postit._id).to.equal(postitId)
                                 expect(postit.text).to.equal(newText)
                             })
                     )
