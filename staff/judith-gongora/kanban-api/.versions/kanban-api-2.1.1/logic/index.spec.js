@@ -210,45 +210,7 @@ describe('logic', () => {
                         expect(_user.password).to.equal(password)
                     }
                 })
-
-                
             })
-        })
-
-        describe('add buddie', () => {
-            let user, user2
-
-            beforeEach(async () => {
-                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
-                user2 = new User({ name: 'John', surname: 'Doe', username: 'jd2', password: '123' })
-
-                await user.save()
-                await user2.save()
-            })
-
-            it('should update on correct id and username', async () => {
-                const { id } = user
-                const { _id, username } = user2
- 
-                await logic.addBuddieUser(id, username)
- 
-                const _users = await User.findById(id).lean()
- 
-                const [_user] = _users
- 
-                expect(_user.buddies[0]).to.equal(_id)
-        
-            })
-
-            // TODO other combinations of valid updates
-
-        it('should fail on undefined id', () => {
-                const { username } = user2
- 
-                expect(() => logic.addBuddieUser(undefined, username).to.throw(TypeError, 'undefined is not a string'))
-            })
-
-            // TODO other test cases
         })
     })
 

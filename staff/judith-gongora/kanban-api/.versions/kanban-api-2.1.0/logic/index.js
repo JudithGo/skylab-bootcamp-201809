@@ -13,15 +13,15 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-        return (async () => {
-            let user = await User.findOne({ username })
+        return User.findOne({ username })
+            .then(user => {
+                if (user) throw new AlreadyExistsError(`username ${username} already registered`)
 
-            if (user) throw new AlreadyExistsError(`username ${username} already registered`)
+                user = new User({ name, surname, username, password })
 
-            user = new User({ name, surname, username, password })
-
-            await user.save()
-        })()
+                return user.save()
+            })
+            .then( () => undefined)
     },
 
     authenticateUser(username, password) {
@@ -31,12 +31,12 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-        return (async () => {
-            let user = await User.findOne({ username })
+        return User.findOne({ username })
+            .then(user => {
                 if (!user || user.password !== password) throw new AuthError('invalid username or password')
 
                 return user.id
-        })()
+            })
     },
 
     retrieveUser(id) {
@@ -44,14 +44,14 @@ const logic = {
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
 
-        return (async () => {
-            let user = await User.findById( id , {'id':0,  postits: 0, password:0, __v:0}).lean()
+        return User.findById( id , {'id':0,  postits: 0, password:0, __v:0}).lean()
+            .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
                 user.id = id
 
                 return user
-        })()
+            })
     },
 
     updateUser(id, name, surname, username, newPassword, password) {
@@ -69,14 +69,15 @@ const logic = {
         if (newPassword != null && !newPassword.trim().length) throw new ValueError('newPassword is empty or blank')
         if (!password.trim().length) throw new ValueError('password is empty or blank')
 
-        return (async () => {
-            let user = await User.findById(id)
+        return User.findById( id )
+            .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
                 if (user.password !== password) throw new AuthError('invalid password')
 
                 if (username) {
-                    let _user = await User.findOne({username})
+                    return User.findOne({ username })
+                        .then(_user => {
                             if (_user) throw new AlreadyExistsError(`username ${username} already exists`)
 
                             name != null && (user.name = name)
@@ -84,35 +85,18 @@ const logic = {
                             user.username = username
                             newPassword != null && (user.password = newPassword)
 
-                            await user.save()
+                            return user.save()
+                        })
+                        .then( () => undefined ) 
                 } else {
                     name != null && (user.name = name)
                     surname != null && (user.surname = surname)
                     newPassword != null && (user.password = newPassword)
     
-                    await user.save()
+                    return user.save()
                 }
-        })()
-    },
-
-    addBuddieUser(id, username) {
-        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
-
-        if (!id.trim().length) throw new ValueError('id is empty or blank')
-
-        if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
-
-        if (!username.trim().length) throw new ValueError('username is empty or blank')
-
-        return (async () => {
-            let user = await User.findById( id )
-                if (!user) throw new NotFoundError(`user with id ${id} not found`)
-                let _user = await User.findOne({username})
-                    if (!_user) throw new NotFoundError(`user with username ${username} not found`)
-                    user.buddies.push(_user.id)
-
-                    await user.save()
-        })()
+            })
+            .then(()=> undefined)
     },
 
     /**
@@ -139,15 +123,15 @@ const logic = {
 
         if (!status.trim().length) throw new ValueError('status is empty or blank')
 
-        return (async () => {
-            let user = await  User.findById(id)
+        return User.findById(id)
+            .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
                 const postit = new Postit({ text, status, user: user.id })
 
-                await postit.save()
-        })()
-            
+                return postit.save()
+            })
+            .then(() => undefined)
     },
 
     listPostits(id) {
@@ -155,12 +139,13 @@ const logic = {
 
         if (!id.trim().length) throw new ValueError('id is empty or blank')
 
-        return (async () => {
-            let user = await  User.findById(id).lean()
+        return User.findById(id).lean()
+        .then(user => {
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-            let postits =  await Postit.find({ user: user._id }).lean()
-                    const _postits = postits.map(postit => {
+            return Postit.find({ user: user._id })
+                    .lean()
+                    .then(postits => postits.map(postit => {
                         postit.id = postit._id.toString()
                         
                         delete postit._id
@@ -168,9 +153,8 @@ const logic = {
                         postit.user = postit.user.toString()
 
                         return postit
-                    })
-                return _postits
-            })()
+                    }))
+            })
     },
 
     /**
@@ -193,11 +177,11 @@ const logic = {
 
         if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
 
-        return (async () => {
-            let postit = await  Postit.findById( postitId )
+        return Postit.findById( postitId )
+            .then(postit => {
                 if (!postit) throw new NotFoundError(`postit with id ${postitId} not found`)
-                await postit.remove()
-        })()
+                return postit.remove()
+            })
     },
 
     modifyPostit(id, postitId, text, status) {
@@ -217,15 +201,15 @@ const logic = {
 
         if (!status.trim().length) throw new ValueError('text is empty or blank')
 
-        return (async () => {
-            let postit = await  Postit.findById( postitId )
+        return Postit.findById( postitId )
+            .then(postit => {
                 if (!postit) throw new NotFoundError(`postit with id ${postitId} not found`)
                 
                 postit.text = text
                 postit.status = status
 
-                await postit.save()
-        })()
+                return postit.save()
+            })
     }
 }
 

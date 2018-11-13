@@ -13,10 +13,6 @@ const Postit = new Schema({
         type: ObjectId,
         ref: 'User',
         required: true
-    },
-    asignto: {
-        type: ObjectId,
-        ref: 'User'
     }
 })
 
@@ -37,11 +33,7 @@ const User = new Schema({
     password: {
         type: String,
         required: true
-    },
-    buddies: [{
-        type: ObjectId,
-        ref: 'User'
-    }]
+    }
 })
 
 module.exports = {

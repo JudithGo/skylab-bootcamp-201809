@@ -75,21 +75,6 @@ router.patch('/users/:id', [bearerTokenParser, jwtVerifier, jsonBodyParser], (re
     }, res)
 })
 
-router.patch('/users/:id/buddie', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
-    routeHandler(() => {
-        const { params: { id }, sub, body: { buddie } } = req
-
-        if (id !== sub) throw Error('token sub does not match user id')
-
-        return logic.addBuddieUser(id, buddie)
-            .then(() =>
-                res.json({
-                    message: 'buddie added'
-                })
-            )
-    }, res)
-})
-
 router.post('/users/:id/postits', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { sub, params: { id }, body: { text, status } } = req

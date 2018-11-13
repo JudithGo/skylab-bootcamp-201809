@@ -95,26 +95,6 @@ const logic = {
         })()
     },
 
-    addBuddieUser(id, username) {
-        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
-
-        if (!id.trim().length) throw new ValueError('id is empty or blank')
-
-        if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
-
-        if (!username.trim().length) throw new ValueError('username is empty or blank')
-
-        return (async () => {
-            let user = await User.findById( id )
-                if (!user) throw new NotFoundError(`user with id ${id} not found`)
-                let _user = await User.findOne({username})
-                    if (!_user) throw new NotFoundError(`user with username ${username} not found`)
-                    user.buddies.push(_user.id)
-
-                    await user.save()
-        })()
-    },
-
     /**
      * Adds a postit
      * 
