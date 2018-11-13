@@ -80,6 +80,15 @@ class Postits extends Component {
         }
     }
 
+    handleAddBuddie = (text) => {
+        try {
+            console.log(text)
+            logic.addBuddie(text)
+        } catch ({ message }) {
+            alert(message) // HORROR! FORBIDDEN! ACHTUNG!
+        }
+    }
+
     // TODO error handling!
 
     handleRemovePostit = id =>
@@ -193,11 +202,18 @@ class Postits extends Component {
                     </section>           
                      
             </div>
+            
             <div className="remove">
                 <p className="remove__text">Drop here to remove</p>
                 <section className="dropzone-remove" onDragOver={this.onDragOver} onDrop={ event => this.onDrop(event, 'remove')} >    
                 </section> 
-            </div>     
+            </div>   
+            <div className="buddie">
+                <section className="addBuddie">
+                    <p className="addBuddie__text">Add buddies here</p>
+                    <InputForm onSubmit={this.handleAddBuddie}/>
+                </section>
+            </div>   
         </div>
     }
 }

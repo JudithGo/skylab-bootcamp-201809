@@ -14,7 +14,7 @@ const Postit = new Schema({
         ref: 'User',
         required: true
     },
-    asignto: {
+    assignTo: {
         type: ObjectId,
         ref: 'User'
     }

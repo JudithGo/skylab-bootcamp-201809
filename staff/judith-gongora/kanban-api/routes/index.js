@@ -77,11 +77,11 @@ router.patch('/users/:id', [bearerTokenParser, jwtVerifier, jsonBodyParser], (re
 
 router.patch('/users/:id/buddie', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { params: { id }, sub, body: { buddie } } = req
+        const { params: { id }, sub, body: { username } } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.addBuddieUser(id, buddie)
+        return logic.addBuddieUser(id, username)
             .then(() =>
                 res.json({
                     message: 'buddie added'
@@ -126,6 +126,19 @@ router.put('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, json
         return logic.modifyPostit(id, postitId, text, status)
             .then(() => res.json({
                 message: 'postit modified'
+            }))
+    }, res)
+})
+
+router.patch('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id, postitId }, body: { username } } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.assignToUser(id, postitId, username)
+            .then(() => res.json({
+                message: 'buddie assigned'
             }))
     }, res)
 })

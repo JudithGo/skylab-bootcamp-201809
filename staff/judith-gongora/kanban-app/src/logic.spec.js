@@ -108,6 +108,39 @@ describe('logic', () => {
 
             // TODO other cases
         })
+
+        describe('add buddie', () => {
+            describe('with existing users', () => {
+                let username, password
+
+                beforeEach(() => {
+                    const name = 'John', surname = 'Doe'
+
+                    username = `jd-${Math.random()}`
+                    password = `123-${Math.random()}`
+                    _username = `jd-${Math.random()}`
+                    _password = `123-${Math.random()}`
+
+                    return logic.registerUser(name, surname, username, password)
+                    .then(()=>logic.registerUser(name, surname, _username, _password))
+                    .then(()=>logic.login(username,password))
+                })
+
+                it('should succeed on correct data', () =>{
+                    return logic.addBuddie(_username)
+                        .then(() => expect(true).to.be.true)
+                })
+
+                it('should fail on wrong username', () => {
+                    _username = `dummy-${Math.random()}`
+
+                    return logic.addBuddie(_username)
+                        .then(() => expect(true).to.be.true)
+                })
+    
+            })
+            // TODO other cases
+        })
     })
 
     describe('postits', () => {
@@ -249,6 +282,56 @@ describe('logic', () => {
 
                                 expect(postit.id).to.equal(postitId)
                                 expect(postit.text).to.equal(newText)
+                            })
+                    )
+                })
+            })
+        })
+
+        describe('assign buddie to postit', () => {
+            describe('with existing users', () => {
+                let username, password, text, status, postitId
+
+                beforeEach(() => {
+                    const name = 'John', surname = 'Doe'
+
+                    username = `jd-${Math.random()}`
+                    password = `123-${Math.random()}`
+                    _username = `jd-${Math.random()}`
+                    _password = `123-${Math.random()}`
+
+                    text = `hello ${Math.random()}`
+                    status = 'todo'
+
+                    return logic.registerUser(name, surname, username, password)
+                    .then(()=>logic.registerUser(name, surname, _username, _password))
+                    .then(()=>logic.login(username,password))
+
+                })
+
+                describe('with existing postit', () => {
+
+                    beforeEach(() => {
+
+                        return logic.addPostit(text, status)
+                            .then(() => logic.listPostits())
+                            .then(([postit]) => postitId = postit.id)
+                    })
+
+                    it('should succeed', () =>
+                        logic.assignBuddie(postitId, _username)
+                            .then(() => {
+                                expect(true).to.be.true
+
+                                return logic.listPostits()
+                            })
+                            .then(postits => {
+                                expect(postits).not.to.be.undefined
+                                expect(postits.length).to.equal(1)
+
+                                const [postit] = postits
+
+                                expect(postit.id).to.equal(postitId)
                             })
                     )
                 })

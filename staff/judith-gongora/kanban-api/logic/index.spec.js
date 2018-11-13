@@ -232,11 +232,9 @@ describe('logic', () => {
  
                 await logic.addBuddieUser(id, username)
  
-                const _users = await User.findById(id).lean()
+                const _user = await User.findById(id)
  
-                const [_user] = _users
- 
-                expect(_user.buddies[0]).to.equal(_id)
+                expect(_user.buddies[0].toString()).to.equal(_id.toString())
         
             })
 
@@ -369,6 +367,44 @@ describe('logic', () => {
 
                         expect(_postit.text).to.equal(newText)
                         expect(_postit.status).to.equal(newStatus)
+            })
+        })
+
+        describe('assign buddie to postit', () => {
+            let user, user2
+
+            beforeEach(async () => {
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                user2 = new User({ name: 'John', surname: 'Doe', username: 'jd2', password: '123' })
+                postit = new Postit({ text: 'hello text', status: 'todo', user: user.id })
+
+                await user.save()
+                await user2.save()
+                await postit.save()
+            })
+
+            it('should update on correct id and username', async () => {
+                const { id } = postit
+                const { _id } = user
+                const { __id, username } = user2
+ 
+                await logic.assignToUser(_id, id, username)
+ 
+                const _postit = await Postit.findById(id)
+ 
+                expect(_postit.user.toString()).to.equal(_id.toString())
+                expect(_postit.assignTo.toString()).to.equal(__id.toString())
+        
+            })
+
+            // TODO other combinations of valid updates
+
+            it('should fail on undefined id', () => {
+                    const { username } = user2
+    
+                    expect(() => logic.addBuddieUser(undefined, username).to.throw(TypeError, 'undefined is not a string'))
+
+                // TODO other test cases
             })
         })
     })

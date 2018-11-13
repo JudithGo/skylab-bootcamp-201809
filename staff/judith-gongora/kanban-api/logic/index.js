@@ -115,6 +115,28 @@ const logic = {
         })()
     },
 
+    assignToUser(idUser, id, username) {
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+
+        if (!id.trim().length) throw new ValueError('id is empty or blank')
+
+        if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
+
+        if (!username.trim().length) throw new ValueError('username is empty or blank')
+
+        return (async () => {
+            let postit = await Postit.findById( id )
+                if (!postit) throw new NotFoundError(`postit with id ${id} not found`)
+                if(postit.user.toString() !== idUser.toString()) throw new NotFoundError(`postit with id ${id} does not match the user `)
+                let _user = await User.findOne({username})
+                    if (!_user) throw new NotFoundError(`user with username ${username} not found`)
+                    
+                    postit.assignTo = _user.id
+
+                    await postit.save()
+        })()
+    },
+
     /**
      * Adds a postit
      * 

@@ -1,13 +1,18 @@
 import React, { Component } from 'react'
 
 class Post extends Component {
-    state = { text: this.props.text, status: this.props.status }
+    state = { text: this.props.text, status: this.props.status, share: false }
 
 
     handleChange = event => {
         const text = event.target.value
 
         this.setState({ text })
+    }
+
+    handleShare = () => {
+
+        this.setState({ share : true })
     }
 
     handleBlur = () => {
@@ -18,7 +23,7 @@ class Post extends Component {
         return <article className="card" draggable onDragStart={ this.props.onDragStart }>
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
 
-            {/* <button onClick={() => this.props.onDeletePost(this.props.id)}><i className="far fa-trash-alt"></i></button> */}
+            <button onClick={() => this.handleShare}><i className="fas fa-share-alt-square"></i></button>
         </article>
     }
 }

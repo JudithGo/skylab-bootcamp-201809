@@ -56,6 +56,25 @@ const logic = {
             })
     },
 
+    addBuddie(username){
+        if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
+
+        if (!username.trim()) throw Error('username is empty or blank')
+
+        return fetch(`${this.url}/users/${this._userId}/buddie`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({ username })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+            })
+    },
+
     get loggedIn() {
         return !!this._userId
     },
@@ -145,6 +164,27 @@ const logic = {
                 'Authorization': `Bearer ${this._token}`
             },
             body: JSON.stringify({ text, status })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+            })
+    },
+
+    assignBuddie(id, username){
+        if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+
+        if (!username.trim()) throw Error('username is empty or blank')
+        if (!id.trim()) throw Error('id is empty or blank')
+
+        return fetch(`${this.url}/users/${this._userId}/postits/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({ username })
         })
             .then(res => res.json())
             .then(res => {
