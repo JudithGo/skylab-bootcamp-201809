@@ -6,6 +6,8 @@ const bearerTokenParser = require('../utils/bearer-token-parser')
 const jwtVerifier = require('./jwt-verifier')
 const routeHandler = require('./route-handler')
 const fileUpload = require('express-fileupload');
+const fs = require('fs');
+
 
 const jsonBodyParser = bodyParser.json()
 
@@ -31,7 +33,6 @@ router.post('/users', jsonBodyParser, (req, res) => {
 router.post('/auth', jsonBodyParser, (req, res) => {
     routeHandler(() => {
         const { username, password } = req.body
-
         return logic.authenticateUser(username, password)
             .then(id => {
                 const token = jwt.sign({ sub: id }, JWT_SECRET)
@@ -120,11 +121,12 @@ router.get('/users/:id/postits', [bearerTokenParser, jwtVerifier], (req, res) =>
 
 router.post('/users/:id/upload', [bearerTokenParser, jwtVerifier, fileUpload()], (req, res) => {
     routeHandler(() => {
-        const { sub, params: { id }, files: { file } } = req
-
+        
+        const { sub, params: { id }, files: { photo } } = req
+        
         if (id !== sub) throw Error('token sub does not match user id')
-
-        return logic.uploadPhoto(id, file.name, file.data)
+        
+        return logic.uploadPhoto(id, photo.name, photo.data)
             .then(() => res.json({
                 message: 'photo added'
             }))
@@ -137,12 +139,22 @@ router.get('/users/:id/upload', [bearerTokenParser, jwtVerifier], (req, res) => 
         const { sub, params: { id } } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
-
+        
+        // return logic.retrievePhoto(id)
+        //     .then(file => res.download(file))
+        // }, res)
         return logic.retrievePhoto(id)
-            .then(photo => res.json({
-                data: photo
-            }))
+            .then(file => {
+                var bitmap = fs.readFileSync('/Users/judith/bootcamp/collab/skylab-bootcamp-201809/staff/judith-gongora/kanban-api/' + `${file}`);
+                let data = new Buffer(bitmap).toString('base64')
+                return data = `data:image/png;base64,${data}`
+            })
+            .then(data=> res.json({
+            data: data,
+            message: 'ok'
+        }))
     }, res)
+        
 })
 
 router.get('/users/:id/buddies', [bearerTokenParser, jwtVerifier], (req, res) => {

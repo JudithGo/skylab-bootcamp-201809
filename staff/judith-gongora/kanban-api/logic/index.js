@@ -1,4 +1,5 @@
 const { User, Postit } = require('../data')
+const fs = require('fs');
 const { AlreadyExistsError, AuthError, NotFoundError, ValueError } = require('../errors')
 
 const logic = {
@@ -54,24 +55,78 @@ const logic = {
         })()
     },
 
-    uploadPhoto(id, filename, filedata) {
+    retrievePhoto(id) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
-        if (typeof file !== 'string') throw TypeError(`${file} is not a string`)
-
+        
         if (!id.trim().length) throw new ValueError('id is empty or blank')
-        if (!file.trim().length) throw new ValueError('file is empty or blank')
 
         return (async () => {
-            let user = await User.findById( id ).lean()
+            let user = await User.findById( id )
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                fs.writeFile(`data/${id}/${filename}`, filedata, err => {
-                    if (err) return reject(err)
+                if(fs.existsSync(`data/users/${id}/`)) { 
+                    const files = fs.readdirSync(`data/users/${id}/`)
+                    const file = `data/users/${id}/${files[0]}`   
+                    
+                    return file    
+                }
+                if(fs.existsSync(`data/users/${id}/`)){return undefined}
 
-                    resolve(true)
+        })()
+        
+    },
+
+    uploadPhoto(id, filename, filedata) {
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+        if (typeof filename !== 'string') throw TypeError(`${file} is not a string`)
+
+        if (!id.trim().length) throw new ValueError('id is empty or blank')
+        if (!filename.trim().length) throw new ValueError('file is empty or blank')
+        return (async () => {
+            let user = await User.findById( id )
+                if (!user) throw new NotFoundError(`user with id ${id} not found`)
+
+                if(fs.existsSync(`data/users/${id}/`)) { 
+        
+                    const files = fs.readdirSync(`data/users/${id}/`)
+                        fs.unlinkSync(`data/users/${id}/${files[0]}`)       
+                }
+
+                // if(fs.existsSync(`data/users/${id}/`)) {   
+                //     fs.unlinkSync(`data/users/${id}/${files[0]}`, err => {
+                //         if (err) throw Error(err)
+                //     })
+                // }
+    
+                if (!fs.existsSync(`data/users/${id}/`)) {fs.mkdirSync(`data/users/${id}/`)}
+
+                fs.writeFile(`data/users/${id}/${filename}`, filedata, err => {
+                    if (err) throw Error ('Error')                       
                 })
+                    
         })()
     },
+
+    // retrievePhoto(id) {
+        
+    //     if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+
+    //     if (!id.trim().length) throw new ValueError('id is empty or blank')
+    //     return (async () => {
+    //         let user = await User.findById( id )
+    //         console.log(user)
+    //             if (!user) throw new NotFoundError(`user with id ${id} not found`)
+               
+    //         fs.readdir(`data/users/${id}/`, (err, files) => {
+                
+    //             if (err) throw Error ('Error')
+    //             if (files[0]) return `data/${username}/files/${files[0]}`  
+               
+    //         })
+    //     })
+
+        
+    // },
 
     retrieveBuddies(id) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)

@@ -5,12 +5,13 @@ import Postits from './components/Postits'
 import Error from './components/Error'
 import Landing from './components/Landing'
 import logic from './logic'
+import Profile from './components/Profile'
 import { Route, withRouter, Redirect } from 'react-router-dom'
 
 logic.url = 'http://localhost:5000/api'
 
 class App extends Component {
-    state = { error: null }
+    state = { error: null, profile: false }
 
     handleRegisterClick = () => this.props.history.push('/register')
 
@@ -44,18 +45,28 @@ class App extends Component {
         this.props.history.push('/')
     }
 
+    handleBackClick = () => {
+        this.props.history.push('/postits')
+        this.setState({ profile : false })
+    }
+
+    handleProfileClick = () => {
+        this.props.history.push('/profile')
+        this.setState({ profile : true })
+    }
+
     handleGoBack = () => this.props.history.push('/')
 
     render() {
-        const { error } = this.state
+        const { error, profile } = this.state
 
         return <div>
             <Route exact path="/" render={() => !logic.loggedIn ? <Landing onRegisterClick={this.handleRegisterClick} onLoginClick={this.handleLoginClick} /> : <Redirect to="/postits" />} />
             <Route path="/register" render={() => !logic.loggedIn ? <Register onRegister={this.handleRegister} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
             <Route path="/login" render={() => !logic.loggedIn ? <Login onLogin={this.handleLogin} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
             {error && <Error message={error} />}
-
-            <Route path="/postits" render={() => logic.loggedIn ? <Postits onLogout={this.handleLogoutClick}/> : <Redirect to="/" />} />
+            <Route path="/postits" render={() => logic.loggedIn && !profile ? <Postits onLogout={this.handleLogoutClick} onHandleProfileClick={this.handleProfileClick} /> : <Redirect to="/home" />} />
+            <Route path="/profile" render={() => logic.loggedIn && profile ? <Profile onLogout={this.handleLogoutClick} onBack={this.handleBackClick}/> : <Redirect to="/" />} />
 
         </div>
     }

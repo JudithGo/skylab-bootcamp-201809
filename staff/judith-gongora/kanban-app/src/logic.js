@@ -56,6 +56,35 @@ const logic = {
             })
     },
 
+    retrieveImage() {
+        return fetch(`${this.url}/users/${this._userId}/upload`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            }
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+                debugger
+                return res.data
+            })
+    },
+
+    uploadPhoto(file) {
+        return fetch(`${this.url}/users/${this._userId}/upload`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({ file })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+            })
+    },
+
     addBuddie(username){
         if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
 

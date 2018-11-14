@@ -32,29 +32,6 @@ class Postits extends Component {
         // TODO error handling!
     }
 
-    // componentWillUpdate(){
-    //     console.log('peo')
-    //     logic.listPostits()
-    //     .then(postits => this.setState({ postits }))
-    //     .then(() =>{
-    //         const todo = this.state.postits.filter(postit => postit.status === 'todo')
-    //         this.setState({todo})
-    //     })
-    //     .then(() =>{
-    //         const doing = this.state.postits.filter(postit => postit.status === 'doing')
-    //         this.setState({doing})
-    //     })
-    //     .then(() =>{
-    //         const review = this.state.postits.filter(postit => postit.status === 'review')
-    //         this.setState({review})
-    //     })
-    //     .then(() =>{
-    //         const done = this.state.postits.filter(postit => postit.status === 'done')
-    //         this.setState({done})
-    //     })
-        
-    // }
-
     handleSubmit = (text, status) => {
         try {
            
@@ -204,7 +181,7 @@ class Postits extends Component {
                         <img src="https://res.cloudinary.com/skylabcoders/image/upload/v1541952996/pintegram/images.png"></img>
                         <h1>Kanban App</h1>
                     </section>    
-                    <div><button onClick={this.props.onLogout}>Logout</button></div>
+                    <div><button onClick={this.props.onHandleProfileClick}>Profile</button></div><div><button onClick={this.props.onLogout}>Logout</button></div> 
                 </header>
 
                 <div className="grid__postits">
