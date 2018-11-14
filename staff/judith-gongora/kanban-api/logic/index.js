@@ -54,6 +54,43 @@ const logic = {
         })()
     },
 
+    uploadPhoto(id, filename, filedata) {
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+        if (typeof file !== 'string') throw TypeError(`${file} is not a string`)
+
+        if (!id.trim().length) throw new ValueError('id is empty or blank')
+        if (!file.trim().length) throw new ValueError('file is empty or blank')
+
+        return (async () => {
+            let user = await User.findById( id ).lean()
+                if (!user) throw new NotFoundError(`user with id ${id} not found`)
+
+                fs.writeFile(`data/${id}/${filename}`, filedata, err => {
+                    if (err) return reject(err)
+
+                    resolve(true)
+                })
+        })()
+    },
+
+    retrieveBuddies(id) {
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+
+        if (!id.trim().length) throw new ValueError('id is empty or blank')
+
+        return (async () => {
+            const user = await User.findById(id, { password: 0, postits: 0, __v: 0 })
+
+            let promises = []
+ 
+            for (var i=0; i<user.buddies.length; i++) {
+                promises.push(User.findById(user.buddies[i]))
+            }
+            return Promise.all(promises)
+                .then(res => res.map(item => item.username))
+        })()
+    },
+
     updateUser(id, name, surname, username, newPassword, password) {
         if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
         if (name != null && typeof name !== 'string') throw TypeError(`${name} is not a string`)
@@ -182,6 +219,7 @@ const logic = {
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
             let postits =  await Postit.find({ user: user._id }).lean()
+
                     const _postits = postits.map(postit => {
                         postit.id = postit._id.toString()
                         
@@ -189,10 +227,26 @@ const logic = {
 
                         postit.user = postit.user.toString()
 
+                        if(postit.assignTo) {postit.assignTo = postit.assignTo.toString()}
+
                         return postit
                     })
-                return _postits
-            })()
+                    
+
+            let postits_ =  await Postit.find({ assignTo: user._id }).lean()
+                const __postits = postits_.map(postit_ => {
+                    postit_.id = postit_._id.toString()
+                    delete postit_._id
+
+                    postit_.user = postit_.user.toString()
+                    if(postit_.assignTo) {postit_.assignTo = postit_.assignTo.toString()}
+                    
+                    return postit_
+                })
+            const result = _postits.concat(__postits)
+
+            return result
+        })()
     },
 
     /**
@@ -218,7 +272,16 @@ const logic = {
         return (async () => {
             let postit = await  Postit.findById( postitId )
                 if (!postit) throw new NotFoundError(`postit with id ${postitId} not found`)
-                await postit.remove()
+                // console.log(postit.assignTo.toString(), id)
+                // await postit.remove()
+                return (async () => {
+                    if(postit.user.toString() === id) { 
+                        await postit.remove()
+                    } else if(postit.assignTo && postit.assignTo.toString() === id) {
+                        postit.assignTo = undefined
+                        await postit.save()
+                    } 
+                })()      
         })()
     },
 

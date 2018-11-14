@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import logic from '../logic'
 import InputForm from './InputForm'
 import Post from './Post'
+import Popup from './Popup'
+// import { set } from 'mongoose';
 
 class Postits extends Component {
-    state = { postits: [], todo: [], doing: [], review: [], done: [] }
+    state = { postits: [], todo: [], doing: [], review: [], done: [], share : '' }
 
     componentDidMount() {
         logic.listPostits()
@@ -78,6 +80,41 @@ class Postits extends Component {
         } catch ({ message }) {
             alert(message) // HORROR! FORBIDDEN! ACHTUNG!
         }
+    }
+
+    handleSubmitShare = (text) => {
+        try {
+           
+            logic.assignBuddie(this.state.share, text)
+                .then(() => logic.listPostits())
+                .then(postits => this.setState({ postits }))
+                .then(() =>{
+                    const todo = this.state.postits.filter(postit => postit.status === 'todo')
+                    this.setState({todo})
+                })
+                .then(() =>{
+                    const doing = this.state.postits.filter(postit => postit.status === 'doing')
+                    this.setState({doing})
+                })
+                .then(() =>{
+                    const review = this.state.postits.filter(postit => postit.status === 'review')
+                    this.setState({review})
+                })
+                .then(() =>{
+                    const done = this.state.postits.filter(postit => postit.status === 'done')
+                    this.setState({done})
+                })
+        } catch ({ message }) {
+            alert(message) // HORROR! FORBIDDEN! ACHTUNG!
+        }
+    }
+
+    handleShare = (share) => {
+        this.setState({share})
+    }
+
+    handleClosePopup = () => {
+        this.setState({share:''})
     }
 
     handleAddBuddie = (text) => {
@@ -177,28 +214,28 @@ class Postits extends Component {
                         To Do
                     </header>
                     <InputForm onSubmit={this.handleSubmit}  status = 'todo' />
-                        {this.state.todo.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onUpdatePost={this.handleModifyPostit} status = 'todo' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
+                        {this.state.todo.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} user={postit.user} onUpdatePost={this.handleModifyPostit} onHandleShare={this.handleShare} status = 'todo' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
                     </section>
                     <section className="list dropzone" onDragOver={this.onDragOver} onDrop={ event => this.onDrop(event, 'doing')}>
                     <header>
                         Doing
                     </header>
                     <InputForm onSubmit={this.handleSubmit} status= 'doing'/>
-                        {this.state.doing.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onUpdatePost={this.handleModifyPostit} status = 'doing' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
+                        {this.state.doing.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} user={postit.user} onUpdatePost={this.handleModifyPostit} onHandleShare={this.handleShare} status = 'doing' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
                     </section>
                     <section className="list dropzone" onDragOver={this.onDragOver} onDrop={ event => this.onDrop(event, 'review')}>
                         <header>
                             Review
                         </header>
                         <InputForm onSubmit={this.handleSubmit} status='review'/>
-                        {this.state.review.map(postit => <Post key={postit.id} text={postit.text} id={postit.id}  onUpdatePost={this.handleModifyPostit} status = 'review' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id,postit.text) }/>)}
+                        {this.state.review.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} user={postit.user} onUpdatePost={this.handleModifyPostit} onHandleShare={this.handleShare} status = 'review' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id,postit.text) }/>)}
                     </section>
                     <section className="list dropzone" onDragOver={this.onDragOver} onDrop={ event => this.onDrop(event, 'done')}>
                     <header>
                         Done
                     </header>
                     <InputForm onSubmit={this.handleSubmit} status='done'/>
-                        {this.state.done.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onUpdatePost={this.handleModifyPostit} status = 'done' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
+                        {this.state.done.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} user={postit.user} onUpdatePost={this.handleModifyPostit} onHandleShare={this.handleShare} status = 'done' draggable='true' onDragStart={ event => this.onDragStart(event, postit.id, postit.text) }/>)}
                     </section>           
                      
             </div>
@@ -214,6 +251,7 @@ class Postits extends Component {
                     <InputForm onSubmit={this.handleAddBuddie}/>
                 </section>
             </div>   
+            {this.state.share && <Popup key={this.state.share} onClosePopup={this.handleClosePopup} onSubmitShare={this.handleSubmitShare}/>}
         </div>
     }
 }

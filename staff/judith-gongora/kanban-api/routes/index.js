@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const bearerTokenParser = require('../utils/bearer-token-parser')
 const jwtVerifier = require('./jwt-verifier')
 const routeHandler = require('./route-handler')
+const fileUpload = require('express-fileupload');
 
 const jsonBodyParser = bodyParser.json()
 
@@ -113,6 +114,46 @@ router.get('/users/:id/postits', [bearerTokenParser, jwtVerifier], (req, res) =>
         return logic.listPostits(id)
             .then(postits => res.json({
                 data: postits
+            }))
+    }, res)
+})
+
+router.post('/users/:id/upload', [bearerTokenParser, jwtVerifier, fileUpload()], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id }, files: { file } } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.uploadPhoto(id, file.name, file.data)
+            .then(() => res.json({
+                message: 'photo added'
+            }))
+
+    }, res)
+})
+
+router.get('/users/:id/upload', [bearerTokenParser, jwtVerifier], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id } } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.retrievePhoto(id)
+            .then(photo => res.json({
+                data: photo
+            }))
+    }, res)
+})
+
+router.get('/users/:id/buddies', [bearerTokenParser, jwtVerifier], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id } } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.retrieveBuddies(id)
+            .then(buddies => res.json({
+                data: buddies
             }))
     }, res)
 })

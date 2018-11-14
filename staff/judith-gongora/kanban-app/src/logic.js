@@ -75,6 +75,21 @@ const logic = {
             })
     },
 
+    listBuddies() {
+        return fetch(`${this.url}/users/${this._userId}/buddies`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            }
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+
+                return res.data
+            })
+    },
+
     get loggedIn() {
         return !!this._userId
     },

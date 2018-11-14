@@ -1,8 +1,14 @@
 import React, { Component } from 'react'
+import logic from '../logic'
 
 class Post extends Component {
-    state = { text: this.props.text, status: this.props.status, share: false }
+    state = { text: this.props.text, status: this.props.status, mine: false}
 
+    componentDidMount(){
+        if(this.props.user === logic._userId) {
+            this.setState({mine : true})
+        }
+    }
 
     handleChange = event => {
         const text = event.target.value
@@ -11,8 +17,7 @@ class Post extends Component {
     }
 
     handleShare = () => {
-
-        this.setState({ share : true })
+        this.props.onHandleShare(this.props.id)
     }
 
     handleBlur = () => {
@@ -23,7 +28,7 @@ class Post extends Component {
         return <article className="card" draggable onDragStart={ this.props.onDragStart }>
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
 
-            <button onClick={() => this.handleShare}><i className="fas fa-share-alt-square"></i></button>
+            {this.state.mine && <button onClick={this.handleShare}>  <i className="fas fa-share-alt-square"></i></button> }
         </article>
     }
 }
