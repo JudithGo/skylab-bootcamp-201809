@@ -66,16 +66,17 @@ const logic = {
             .then(res => res.json())
             .then(res => {
                 if (res.error) throw Error(res.error)
-                debugger
                 return res.data
             })
     },
 
     uploadPhoto(file) {
+        console.log(file)
         return fetch(`${this.url}/users/${this._userId}/upload`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${this._token}`
+                // 'Content-Type' : 'multipart/form-data'
             },
             body: JSON.stringify({ file })
         })

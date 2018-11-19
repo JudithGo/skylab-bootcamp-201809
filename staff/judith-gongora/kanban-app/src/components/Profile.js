@@ -47,6 +47,7 @@ class Profile extends Component {
     handleSubmitChange = (file) =>{
         const data = new FormData()
         data.append('photo', file, file.name)
+        console.log(data)
         logic.uploadPhoto(data)
             .then(logic.retrieveImage())
             .then(img => this.setState({ img }))
