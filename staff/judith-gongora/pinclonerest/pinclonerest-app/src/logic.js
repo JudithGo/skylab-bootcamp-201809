@@ -34,7 +34,7 @@ const logic = {
             init.body = JSON.stringify(data)
         }
 
-        return fetch(`http://localhost:5000/api/${path}`, init)
+        return fetch(`https://obscure-waters-97563.herokuapp.com/api/${path}`, init)
             .then(res => res.json())
     },
 
@@ -133,7 +133,7 @@ const logic = {
           }
         
 
-        let path = 'http:///localhost:5000/api/users/' + this._userId + '/photo'
+        let path = 'https://obscure-waters-97563.herokuapp.com/api/users/' + this._userId + '/photo'
 
         return fetch(path, {
             method: 'POST',
@@ -325,7 +325,7 @@ const logic = {
         if (url) body.append('url', url)
         if (description) body.append('description', description)
 
-        let path = 'http:///localhost:5000/api/users/' + this._userId + '/pins'
+        let path = 'https://obscure-waters-97563.herokuapp.com/api/users/' + this._userId + '/pins'
 
         return fetch(path, {
             method: 'POST',
